@@ -1,0 +1,51 @@
+今日作业：
+	1.简述
+	什么是模块
+	#一系列功能的集合体
+	模块有哪些来源
+	#1.第三方提供的2.内置的模块3.自定义模块
+	模块的格式要求有哪些
+	#用python写的py文件
+	#编译好的共享模块或是用dll编译的c或c++的文件
+	#一些模块放在一起的文件夹
+	#用c编写连接到python内置的模块
+	2.定义一个cuboid模块，模块中有三个变量长(long)宽(wide)高(high)，数值自定义，有一个返回值为周长的perimeter方法，一个返回值为表面积的area方法
+long_size=1
+with_size=1
+height_size=1
+def perimeter():
+    return (with_size+long_size+height_size)*4
+def area():
+    return (long_size*with_size+with_size*height_size+long_size*height_size)*2
+
+	3.定义一个用户文件stu1.py，在该文件中打印cuboid的长宽高，并获得周长和表面积，打印出来
+import cuboid
+print(cuboid.perimeter())
+print(cuboid.area())
+
+	4.在stu2.py文件中导入cuboid模块时为模块起简单别名，利用别名完成第3题中完成的操作
+import cuboid as foo
+print(foo.perimeter())
+print(foo.area())
+
+	5.现在有三个模块sys、time、place，可以在run.py文件导入三个模块吗？有几种方式？分别写出来
+    import sys
+    import time
+    import place
+    import sys,time,place
+    6.结合第2、3、4题完成from...import...案例，完成同样的功能
+from cuboid import perimeter,area
+print(perimeter())
+print(area())
+
+from cuboid import perimeter as p
+from cuboid import area as a
+print(p())
+print(a())
+	7.比较总结import与from...import...各自的优缺点
+	import:
+	    优点:指名道姓的向某一个名称空间要名字,不会与当前名称空间的名字相冲突
+	    缺点:每次都要加前缀,代码不够简洁代码冗余
+	from...import...
+	    优点:无需加前缀代码简洁/使用方便
+	    缺点:容易与自定义的变量重名

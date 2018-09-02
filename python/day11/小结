@@ -1,0 +1,78 @@
+1. 什么是装饰器
+    器:指的是具备某一功能的工具
+    装饰:指的是为被装饰器对象添加新功能
+
+    装饰器就是用来为被装饰器对象添加新功能的工具
+    注意:装饰器本身可以是任意可调用对象,被装饰器的对象也可以是任意可调用对象
+
+
+2. 为何要用装饰器
+    开放封闭原则:封闭指的是对修改封闭,对扩展开放
+
+    装饰器的实现必须遵循两大原则:
+        1. 不修改被装饰对象的源代码
+        2. 不修改被装饰器对象的调用方式
+
+    装饰器的目标:就是在遵循1和2原则的前提下为被装饰对象添加上新功能
+装饰器模板:
+无参装饰器:
+def outter(func):
+    def wrapper(*args,**kwargs):
+        res=func(*args,**kwargs)
+        return res
+    return wrapper
+@outter
+有参装饰器:
+def outermost(layout='file'):
+    def outter(func):
+        def inner(*args,**kwargs):
+            res=func(*args,**kwargs)
+            return res
+        return inner
+    return outter
+@outter()
+装饰器的语法糖:在被装饰对象正上方单独一行写@装饰器的名字
+运行原理:
+python解释器一旦运行到@装饰器的名字,就会调用装饰器,然后将被装饰函数的内存地址当作参数
+传给装饰器,最后将装饰器调用的结果赋值给原函数名
+解释@语法的时候是自下而上运行
+而执行装饰器内的那个wrapper函数时的是自上而下(总之就是先自下而上运行outter和inner之间的代码,然后自上而下的运行inner里的代码)
+@timmer # index=timmer(wrapper2) #index=wrapper1
+@auth # index=auth(最原始的那个index的内存地址) #index=wrapper2
+def timmer(func):                  #1.return wrapper
+    print('timmer')               #     foo=wrapper
+    def wrapper(*args,**kwargs):
+        print('timmer inner')
+        res=func(*args,**kwargs)
+        return res
+    return wrapper
+def timmer2(func):                 #1.return wrapper2
+    print('timmer2')              #     foo=timmer(wrapper2)
+    def wrapper2(*args,**kwargs):
+        print('timmer2 inner')
+        res=func(*args,**kwargs)
+        return res
+    return wrapper2
+def timmer3(func):                  #1.return wrapper3
+    print('timmer3')               #     foo=timmer(timmer2(wrapper3))
+    def wrapper3(*args,**kwargs):
+        print('timmer3 inner')
+        res=func(*args,**kwargs)
+        return res
+    return wrapper3
+@timmer   # foo=timmer(foo)  -----> foo=timmer(timmer2(timmer3(foo)))
+@timmer2  #foo=timmer2(foo)
+@timmer3  #foo=timmer3(foo)
+#还没有调用foo就已经开始调用装饰器
+def foo():
+    pass
+foo()
+#开始调用返回的函数
+------结果-------
+timmer3
+timmer2
+timmer
+timmer inner
+timmer2 inner
+timmer3 inner
+

@@ -1,0 +1,349 @@
+"""
+    time
+        时间转换                    ****
+    datetime
+        获取时间                    ***
+    os
+        操作系统的文件路和目录
+        os.path                     *****
+    sys
+        解释器相关  用于设计脚本程序   ***
+    pickle
+        python本地序列化方式 比较局限  **
+    json
+        通用的数据交换格式 使用起来挺简单  *****
+    shutil
+        文件相关的高级操作                  ***
+    random
+        随机数相关   简单          ****
+"""
+time模块:
+    与时间相关的功能
+    在python中 时间分为3种
+        1.时间戳  timestamp  从1970 1 月 1日 到先在的秒数  主要用于计算两个时间的差
+        2.localtime  本地时间  表示的是计算机当前所在的位置
+        3.UTC 世界协调时间
+          时间戳 结构化 格式化字符
+print(time.gmtime())#获取UTC时间 返回的还是结构化时间  比中国时间少8小时
+print(time.localtime())#获取当地时间   返回的是结构化时间
+time.sleep(2) #让当前进程睡眠一段时间 单位是秒
+print(time.asctime())#Thu Aug  9 15:54:41 2018
+print(time.ctime())#Thu Aug  9 16:06:02 2018
+time.ctime()相当于asctime(localtime(secs))
+
+时间转换格式:
+import time
+time1=time.time()
+#时间戳-->结构化的时间
+time2=time.localtime(time1)
+#结构化的时间-->格式化的时间
+time3=time.strftime('%Y-%m-%d %X',time2)
+#格式化的时间-->结构化的时间
+time2=time.strptime(time3,'%Y-%m-%d %X')
+#结构化的时间-->时间戳
+time1=time.mktime(time2)
+
+#时间戳-->格式化的字符串
+__time=time.localtime(时间戳)
+格式化的字符串=time.strftime('%Y-%m-%d %X',__time)
+
+#格式化的字符串-->时间戳
+time2=time.strptime(格式化的时间,'%Y-%m-%d %X')
+时间戳=time.mktime(time2)
+
+
+datetime模块
+    python实现的一个时间处理模块
+        time 用起来不太方便  所以就有了datetme
+        总结 datetime相比time 更灵活 更本土化
+        timedelta表示时间差
+            两个时间差可以 +-*/
+            时间差和datetime 可以+-
+
+timedelta模块表示时间差
+    包含三个可用名称 days seconds micreseconds 微秒
+    支持加减乘除 可用方法total_secondes
+t1=datetime.timedelta(days=1)
+t2=datetime.timedelta(weeks=1)
+t3=datetime.datetime.now()
+print(t3)#2018-08-09 16:48:52.295533
+print(t3-t1)#2018-08-08 16:48:52.295533
+print(t3-t2)#2018-08-02 16:48:52.295533
+print((t2-t1).total_seconds())#seconds获取的是时间差的秒数
+
+print(datetime.datetime.now())#2018-08-09 09:14:52.381808
+d=datetime.datetime.now()
+print(d.year)#2018
+d2=datetime.datetime(2018,8,23,9,10,5)#2018-08-23 09:10:05#自定义时间
+print(d2-d)#13 days, 23:49:13.690711#时间差
+print(d.replace(year=2020))#2020-08-09 09:23:11.436177#修改时间
+print(datetime.datetime.now()+datetime.timedelta(days=1,hours=1,minutes=1,seconds=1))#修改时间(加或减)
+
+
+random模块(随机数)
+random.random() #[0,1)
+random.randint(0,3)  #[0,3]
+random.randrange(0,3) #[0,3)
+random.choice([1,2,3])  #在1,2,3里随机选一个
+random.sample([1,2,3,4,5],2)    #(指定选择个数)从1,2,3,4,5中随机选择2个
+random.uniform(1,3) #(1,3)中的随机浮点数
+#打乱
+l=[1,2,3,4,5,6]
+random.shuffle(l)
+print(l)#[6, 3, 4, 1, 5, 2]
+
+随机验证码:
+import random
+def foo(n):
+    str_all=''
+    for i in range(4):
+        str1=str(random.randint(0,9))
+        str2=chr(random.randint(65,90))
+        str_all+=random.choice([str1,str2])
+    print(str_all)
+foo(4)
+
+sys模块(系统)
+    系统相关 一般用于设计脚本程序
+1. sys.argv           命令⾏参数List，第一个元素是程序本身路径
+(上次的拷贝文件用到argv,在cmd里打开...)
+    import sys
+    src1=sys.argv[1]
+    src2=sys.argv[2]
+    with open(src1,'r',encoding='gbk')as read_f,\
+        open(src2,'w',encoding='gbk')as write_f:
+        for line in read_f:
+            write_f.write(line)
+    C:\Users\2\Desktop\单词表.txt
+    C:\Users\2\Desktop\单词表2.txt
+    用cmd打开:
+    C:\Users\2>D:
+    D:\>python3 test.py C:\Users\2\Desktop\单词表.txt C:\Users\2\Desktop\单词表2.txt
+
+2.sys.exit(n) 退出程序,正常退出时exit(0)
+3.sys.path  返回模块的搜索路径,初始化时使用PYTHONPATH环境变量的值
+    import sys
+    print(sys.path)#输出模块的搜索路径
+    sys.exit(0)#退出sys
+    print(sys.path)#输出不了模块的搜索路径了
+4.sys.version 获取Python解释程序的版本信息
+    print(sys.version)
+    #3.6.1 (v3.6.1:69c0db5, Mar 21 2017, 18:41:36) [MSC v.1900 64 bit (AMD64)]
+5.sys.maxint   最大的Int值
+    print(sys.maxint)#python3中已经没有maxint了,只有maxsize
+    print(sys.maxsize)#小整数最大的值(9223372036854775807)
+6.sys.platform  返回操作系统平台名称
+    print(sys.platform)#win32
+
+字符串的格式化
+需要被占位的情况下,前置%为转义字符,
+不需要被占位的情况下,所有%都是普通%
+print('%')#%
+print('%%')#%%
+print('%%d')#%%d
+print('%%d'%10)#报错
+print('%d%'%10)#报错
+print('%%%d'%10)#%10
+print('%d%%'%10)#10%
+
+
+
+进度条:
+import time
+def make_progress(percent,width=50):
+    if percent > 1:percent=1
+    show_str=('[%%-%ds]' % width) % (int(percent * width) * '#')
+    print('\r%s %s%%' %(show_str,int(percent * 100)),end='')
+total_size=25555
+recv_size=0
+while recv_size < total_size:
+    time.sleep(0.1)
+    recv_size+=1024
+    percent=recv_size / total_size
+    make_progress(percent)
+
+os模块(操作系统)
+    os表示操作系统相关
+    第一大快功能 就是围绕文件和目录的操作
+
+    os.getcwd() 获取当前工作目录，即当前python脚本工作的目录路径
+    os.chdir("dirname")  改变当前脚本工作目录；相当于shell下cd
+    os.curdir  返回当前目录: ('.')
+    os.pardir  获取当前目录的父目录字符串名：('..')
+    os.makedirs('dirname1/dirname2')    可生成多层递归目录
+    os.removedirs('dirname1')    若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推
+    os.mkdir('dirname')    生成单级目录；相当于shell中mkdir dirname
+    os.rmdir('dirname')    删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname
+    os.listdir('dirname')    列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印
+    os.remove()  删除一个文件
+    os.rename("oldname","newname")  重命名文件/目录
+    os.stat('path/filename')  获取文件/目录信息
+    os.sep    输出操作系统特定的路径分隔符，win下为"\\",Linux下为"/"
+    os.linesep    输出当前平台使用的行终止符，win下为"\t\n",Linux下为"\n"
+    os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:
+    os.name    输出字符串指示当前使用平台。win->'nt'; Linux->'posix'
+    os.system("bash command")  运行shell命令，直接显示
+    os.environ  获取系统环境变量
+    os.path.abspath(path)  返回path规范化的绝对路径
+    os.path.split(path)  将path分割成目录和文件名二元组返回
+    os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素
+    os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素
+    os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False
+    os.path.isabs(path)  如果path是绝对路径，返回True
+    os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False
+    os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False
+    os.path.join(path1[, path2[, ...]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+    os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间
+    os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
+    os.path.getsize(path) 返回path的大小
+
+path模块(重点)
+os.path.abspath(path)#返回path规范化的路径(不会因为r而使得路径分隔符变成\\)
+os.path.split(path)#将path分割成目录和文件名
+    print(os.path.split(r'C:\Users\2\Desktop\a.txt'))#('C:\\Users\\2\\Desktop', 'a.txt')
+    print(os.path.split(r'C:\Users\2\Desktop'))#('C:\\Users\\2', 'Desktop')
+os.path.dirname(r'C:\Users\2\Desktop\a.txt')#返回path的目录,其实就是os.path.split(path)的第一个元素
+    print(os.path.dirname(r'C:\Users\2\Desktop\a.txt'))#C:\Users\2\Desktop
+    print(os.path.dirname(r'C:\Users\2\Desktop'))#C:\Users\2
+os.path.basename(r'C:\Users\2\Desktop\a.txt')#返回path最后的文件名,如果path以\或/结尾,就会返回空值.
+    print(os.path.basename(r'C:\Users\2\Desktop\a.txt'))#a.txt
+    print(os.path.basename(r'C:\Users\2\Desktop'))#Desktop
+os.path.isabs(path)#如果是绝对路径就返回True,否则返回False
+    path=r'C:\Users\2\Desktop\python\day17\0809.txt'
+    print(os.path.isabs(path))#True
+    path=r'python\day17\0809.txt'
+    print(os.path.isabs(path))#False
+os.path.exists(path)#如果路径存在就返回True,否则返回False
+os.path.isfile(path)如果path是一个存在的文件(不是文件夹),返回True,否则返回False
+    print(os.path.isfile(r'C:\Users\2\Desktop\python\day17\0809作业.txt'))#True
+    print(os.path.isfile(r'C:\Users\2\Desktop\python\day17\0809.txt'))#False
+    print(os.path.isfile(r'C:\Users\2\Desktop'))#False
+os.path.isdir(path)如果path是一个存在的目录(不是文件),则返回True,否则返回False
+    print(os.path.isdir(r'C:\Users\2\Desktop\python\day17\0809作业.txt'))#False
+    print(os.path.isdir(r'C:\Users\2\Desktop\python\day17\0809.txt'))#False
+    print(os.path.isdir(r'C:\Users\2\Desktop'))#True
+os.path.join(path1,path2)将多个路径组合后返回,第一个绝对路径之前的参数被忽略
+    print(os.path.join('C:','Users','r'))#C:Users\r
+    print(os.path.join('Users','r'))#Users\r
+    print(os.path.join('a',r'C:\Users\2\Desktop\python\day17\0809作业.txt'))#C:\Users\2\Desktop\python\day17\0809作业.txt
+os.path.getatime(path)返回path所指向的文件或者目录的后存取时间
+os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
+os.path.getsize(path) 返回path的大小#如果不存在这个文件就报错
+os.path.normcase(path)用于将路径规范化,会将大写转小写,斜杠改为当前系统分隔符,并且会执⾏..的回到上一层
+    print(os.path.normcase(r'C:\Users\2\Desktop\python\day17\0809作业.txt'))
+    #c:\users\2\desktop\python\day17\0809作业.txt
+    print(os.path.normpath('/a/b/../ABCS'))
+    #\a\ABCS
+
+shutil模块（学linux的就是重点）
+    用于简化文件操作  (文件的高级操作)
+    常用方法copy/move/rm/make_archive
+
+shutil.copyfileobj(open(path1,'r'),open(path2,'w'))将文件内容拷贝到另一个文件中,提供两个文件对象,长度表示缓冲区大小
+    path1=r'C:\Users\2\Desktop\a.txt'
+    path2=r'C:\Users\2\Desktop\b.txt'
+    print(os.path.getsize(path1))#单位是字节
+    shutil.copyfileobj(open(path1,'r'),open(path2,'w'),200)#缓存区的单位是字节
+shutil.copyfile(src,dst)拷贝文件,提供两个文件路径,目标文件无需存在
+    #src, dst 都需是文件名, 如果dst 存在或无权限，会抛出异常copy(src, dst) #dst 可以是目录名。
+    shutil.copyfile(path1,path2)
+shutil.copymode(path1,path2)仅拷贝权限。内容、组、用户均不变,目标文件必须存在
+shutil.copystat(src, dst)仅拷贝状态的信息，包括：mode bits, atime, mtime, flags,目标文件必须存在
+                                              (状态信息,最后访问,最会修改,权限)
+shutil.copy(src,dst)拷贝文件和权限
+shutil.copy2(src, dst)拷贝文件和状态信息
+
+shutil.ignore_patterns(*patterns)
+shutil.copytree(src, dst, symlinks=False, ignore=None)
+递归的去拷贝文件夹
+
+shutil.rmtree(path[, ignore_errors[, onerror]])递归的去删除文件
+shutil.move(src, dst)递归的去移动文件，它类似mv命令，其实就是重命名。
+
+
+压缩与解压缩:
+    shutil 对压缩包的处理是调用 ZipFile 和 TarFile 两个模块来进行的
+格式只能为zip或者rar
+zip压缩:
+    import zipfile,os
+    os.chdir(r'C:\Users\2\Desktop')#切换到文件所在的目录
+    z=zipfile.ZipFile('a.zip','w')#把这个压缩包取名为a.zip
+    z.write('a.txt')#要压缩的文件
+    z.write('b.txt')
+    z.close()#结束
+
+zip解压:
+import zipfile
+z=zipfile.ZipFile(r'C:\Users\2\Desktop\a.zip','r')#要解压的路径
+z.extractall(r'C:\Users\2\Desktop')#解压到哪里
+z.close()#结束
+
+tar压缩
+import tarfile
+t=tarfile.open(r'C:\Users\2\Desktop\a.tar','w')
+t.close()
+
+
+pickle模块(注意:使用的是二进制)
+    作用于序列化,序列化就是将内存中的数据持久化到硬盘
+    回顾 使用文件读写也能完成把数据持久化存储  但是有局限性 当数据比较复杂时用起来就很麻烦
+    例如 需要把一个字典存储到硬盘中   先转成字符串 写入 读取为字符串 转为原始的格式
+    所以就有了pickle
+        1.能将所有python中的数据序列化    int float str dic list tuple set bool
+        2.反序列化  将之前序列化的数据 在恢复成python的数据格式
+    pickle产生的数据 只能由python读取  (跨平台性差)
+    今后你开发程序不可能就是单机程序 你需要和其他设备 其他平台 交换数据
+    我们需要找到一种通用的数据格式 让各个平台都能识别
+import pickle
+users = {"name":"yyh","age":20,"hobbies":["打豆豆","飘"]}
+with open('pikle_test.txt','wb')as f:
+    pickle.dump(users,f)#序列化（在存入文件中使用）
+with open('pikle_test.txt','rb')as f:
+    print(pickle.load(f))#反序列化（在读出文件中使用）
+pickle.dumps(users)#序列化（在存入内存中使用）
+pickle.loads(f.read())#反序列化（在内存中使用）
+注意:使用的是二进制
+
+
+json模块(注意:使用的是字符串,而且是双引号)
+    pickle产生的数据 只能由python读取  (跨平台性差)
+    我们需要找到一种通用的数据格式 让各个平台都能识别
+
+    json模块,用于处理json格式数据的模块
+    json 全称 JavaScrip Object Notation  js的对象表示法
+    所以json能支持的数据类型就是js支持数据类型
+
+    json格式标准
+        能存储的有 str int float dic list bool
+        案列  要求 数据的最开始和最末尾 必须是{} []
+        {"name":"yyh"}
+
+    json是一种通用的数据交换格式  目前主流的语言都能够轻松解析
+    注意: 在使用json格式的时候 数据类型必须按照要求来写 并且 不支持python 元祖 True/Flase '' '''
+
+    序列化
+        dump   处理文件
+        dumps  处理字符串
+    反序列化
+        load  处理文件
+        loads 处理字符串
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

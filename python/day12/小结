@@ -1,0 +1,147 @@
+装饰器补充:(调用原函数的注释...,能返回原函数的注释)
+#wraps装饰器应该加到装饰器最内层的函数上
+from functools import wraps
+def outter(func):
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        res=func(*args,**kwargs)
+        return res
+    return wrapper
+@outter
+def foo():
+    """
+    这是foo的注释
+    :return:
+    """
+    print('running...')
+print(foo.__name__)#返回函数名
+print(help(foo))#返回注释
+1 什么是函数递归
+    函数的递归调用是函数嵌套调用的一种特殊形式,在调用一个函数的过程中又直接或者间接地调用该函数本身,
+    称之为函数的递归调用
+
+    递归调用必须有两个明确的阶段:
+        1. 回溯: 一次次递归调用下去,说白了就一个重复的过程,但需要注意的是每一次重复问题的规模都应该有所减少,
+        直到逼近一个最终的结果,即回溯阶段一定要有一个明确的结束条件
+        2. 递推: 往回一层一层推算出结果
+
+import sys
+print(sys.getrecursionlimit())#最大递归数(堆栈最大深度)
+sys.setrecursionlimit(2000)#修改最大递归数
+
+递归调用就是一个重复的过程,但是每一次重复问题的规模都应该有所减少,并且应该在满足某种条件的情况下结束重复,
+开始进入递推阶段
+#练习1
+def age(n):
+    if n==1:
+        return 18
+    return age(n-1)+2
+print(age(5))
+
+#练习2
+l=[1,[2,[3,[4,[5,[6,[7,[8,[9,[10,[11,]]]]]]]]]]]
+def foo(l):
+    for i in l:
+        if type(i) is list:
+            foo(i)
+        else:
+            print(i)
+foo(l)
+
+列表生成式
+names=['alex','lqz','yyh','fm']
+l=[name+'sb' for name in names]
+print(l)
+
+names=['alexsb','lqzsb','yyhsb','fmsb']
+l=[name for name in names if name.endswith('sb')]
+print(l)
+
+字典生成器:
+keys=['name','age','sex']
+vals=['egon',18,'male']
+dic={key:vals[i] for i,key in enumerate(keys)}
+print(dic)
+
+keys=['name','age','sex']
+vals=['egon',18,'male']
+dic={key:vals[i] for i,key in enumerate(keys) if i>1}
+print(dic)
+可以生成集合:
+dic={i for i in range(1,11)}
+print(dic)
+
+匿名函数
+1 匿名函数：就是没有名字的函数
+2 为何要用：
+    用于仅仅临时使用一次的场景，没有重复使用的需求
+ # 匿名函数的精髓就是没有名字，为其绑定名字是没有意义的
+def foo(x,y):
+    return x+y
+print(foo(1,10))
+====>print((lambda x,y:x+y)(1,10))
+
+比较薪资:
+salaries={
+    'egon':300000,
+    'alex':100000000,
+    'wupeiqi':10000,
+    'yuanhao':2000
+}
+print(max(salaries,key=lambda name:salaries[name]))
+#可以通过max函数的key参数来改变max函数的比较依据，运行原理：
+# max函数会“for循环”出一个值(name)，然后将该值传给key指定的函数
+# 调用key指定的函数，将拿到的返回值当作比较依据
+取的是name 判断是key里面的内容  返回是name
+salaries_and_price=zip(salaries.values(),salaries.keys())
+print(max(salaries_and_price))
+
+#sorted排序(severse相反的)
+print(sorted(salaries,key=lambda name:salaries[name],reverse=True))
+
+三元表达式
+三元表达式实现的效果就是:条件成立的情况下返回一个值,不成立的情况下返回另外一种值
+def max(x,y):
+    print(x if x>y else y)
+max(1,10)
+
+二分法:
+nums=[13,15,17,23,31,53,74,81,96,102,103,201,303,403,503,777]
+find_num=777
+def foo(l):
+    n=len(l)//2
+    if l[n]==find_num:
+        print('找到了')
+    elif l[n]<find_num:
+        foo(l[n+1:])
+    elif l[n]>find_num:
+        foo(l[:n])
+foo(nums)
+
+内置函数:
+https://www.cnblogs.com/Xrinehart/p/3506467.html
+# map：把一个列表按照我们自定义的映射规则映射成一个新的列表
+# filter: 从一个列表中过滤出符合我们过滤规则的值
+    运行原理：相当于for循环取出每一个人名，然后传给匿名函数，将调用匿名函数返回值为True的那个人名给留下来
+# reduce: 把多个值合并成一个结果
+#map:(返回是个列表)
+res=map(lambda n:n+n,range(1,11))
+for i in res:
+    print(i)
+#2 4 6 8 10 12 14 16 18 20
+res=map(lambda x,y:x+y,range(1,11),range(1,11))
+for i in res:
+    print(i)
+#2 4 6 8 10 12 14 16 18 20
+
+#filter:(函数写判断)
+res=filter(lambda x:x>5,range(1,11))
+for i in res:
+    print(i)
+
+#reduce:函数必须要有2个参数。要是有第3个参数，则表示初始值，可以继续调用初始值，返回一个值
+#reduce函数在python3的内建函数移除了，放入了functools模块
+from functools import reduce
+res=reduce(lambda x,y:x+y,range(1,11),5)
+print(res)
+

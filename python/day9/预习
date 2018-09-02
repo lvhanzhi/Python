@@ -1,0 +1,53 @@
+函数:
+# 位置参数/关键字参数/默认参数
+def test(a,b,c,d=1):#d=1是默认参数
+    print(a,b,c,d)
+test(1,2,3)#位置参数
+test(b=0,c=6,a=3)#关键字参数
+#*args会存到元祖中,**kwargs会存到字典中(*args是位置参数,**kwargs是关键字参数)
+def test(**kwargs):
+    print(kwargs)
+    for key,value in kwargs.items():
+        print(value)
+
+test(**dic)
+
+#函数的嵌套
+# f1的定义阶段(先定义,后调用)
+def f1():
+    #函数f2的定义阶段
+    def f2():
+        print('from f2')
+    #f2的调用阶段
+    f2()
+#f1的调用阶段
+f1()
+
+作用域
+需要借助global声明，声明为全局的变量就可以直接修改了
+x=0
+def foo():
+    global x
+    x=1
+foo()
+print(x)
+
+nonlocal x
+#在任意位置调用函数都需要跑到定义函数时寻找作用域关系
+
+#闭包(内部函数对外部作用域的引用)
+def foo():
+    def foo2():
+        print('running...')
+    return foo2
+f=foo()
+def index():
+    f()
+index()
+
+#装饰器:
+def timmer(index):
+    def wrapper(*args,**kwargs):
+        res=index(*args,**kwargs)
+        return res
+    return wrapper

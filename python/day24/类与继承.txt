@@ -1,0 +1,90 @@
+1.简述面向过程编程与面向对象编程
+    面向过程主要针对的是过程,先干什么再干什么,复杂的问题流程化,继而简单化
+    面向对象针对的是对象,把自己当成一个上帝,每个事物都是对象,不存在的可以创造
+2.什么是类，什么是对象，如何区分两者
+    对象是特征与技能的结合体
+    类是一些对象相同的特征与技能的结合体
+    在现实世界中,先有对象(是实际存在的)再有类(抽象的)
+    在python里先有类,再有对象
+
+3.定义一个People类，拥有name、age两个属性和一个eat方法，属性值及方法体可以自定义
+
+4.根据第3题，重新定义一个People类，该类可以创建两个对象p1、p2，两个对象在一创建后就拥有不同的name、age值，如何设计
+5.简述什么是继承，继承都有哪些特点，使用继承的优点是什么
+    继承就是新建类的过程,新建的类是子类/派生类 ,被继承的类是超类/父类/基类
+    子类可以继承父类的属性
+    减少代码的冗余
+6、下面这段代码的输出结果将是什么？请解释原因。
+		class Parent(object):
+		   x = 1
+
+		class Child1(Parent):
+		   pass
+
+		class Child2(Parent):
+		   pass
+
+		print(Parent.x, Child1.x, Child2.x)
+		Child1.x = 2
+		print(Parent.x, Child1.x, Child2.x)
+		Parent.x = 3
+		print(Parent.x, Child1.x, Child2.x)
+7.下面这段代码的输出结果将是什么？请解释原因。
+		class Sup(object):
+		    x = 1
+		def test(self):
+		    print("test - sup")
+
+		class Sub1(Sup):
+		   def test(self):
+		    print("test - sub1")
+
+		class Sub2(Sup):
+		    x = 2
+
+		s = Sup()
+		s1 = Sub1()
+		s2 = Sub2()
+
+		print(s.x)
+		s.test()
+		print(s1.x)
+		s1.test()
+		print(s2.x)
+		s2.test()
+8.下面这段代码的输出结果将是什么？请解释原因。
+		class A:
+    		    def test(self):
+        		print("test - A")
+		class B:
+    		    def test(self):
+        		print("test - B")
+		class C(A, B):
+    		    pass
+		c = C()
+		c.test()
+9.定义一个X类，有test方法，语句体"test - X"在该方法中打印，定义一个Y类继承X类，语句体"test - Y"在该方法中打印，定义一个Z类继承Y类，语句体"test - Z"在该方法中打印。
+	现要求：实例化Z类对象：z = Z()，调用test方法：z.test()
+	打印结果为三句，顺序如下：	
+		--  test - Z
+		    test - X
+		    test - Y
+	如何来设计。
+10.基于面向对象设计一个对战游戏并使用继承优化代码，参考博客
+	http://www.cnblogs.com/linhaifeng/articles/7340497.html#_label1 
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+

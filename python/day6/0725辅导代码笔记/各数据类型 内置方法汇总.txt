@@ -1,0 +1,148 @@
+各数据类型 内置方法汇总
+补课-集合
+	是一种可以保存多个值的类型
+	不能存储重复元素 指的是id相同的叫做重复
+	元素是无序的
+	
+长度
+	len
+内容判断
+	in
+	not in
+	
+关系运算
+	交集 & 
+		intersection		
+		intersection_update 表示将得到的结果赋值给原来的集合
+	并集|合集   /  
+		union
+	对称差集 ^
+		symmetric_difference
+		symmetric_difference_update
+	差集   -
+		difference_update
+	子集  <
+		issubset
+	父集  >
+		issuperset
+	无交集
+		isdisjoint 无交集返回true   有交集返回false
+	
+
+添加  	add()
+	update(集合) 一次添加多个值
+	
+删除
+	pop()随机删除
+	remove(obj) 健壮
+	discard(obj) 可能异常
+
+补课 - 字典
+	字典是一种以键值对方式存放多个值的类型
+	键值对是无序的
+	键值对   key  -  value 对
+	key只能是不可变类型 value可以是任何类型
+	key不能重复
+	value可以重复
+定义方式:
+	dic = {“name”:”yyh”,”age”:20}
+	dic = {name = “yyh”,age=20}
+	dic = dict([["name","yyh"],["age", 20]])
+	dic = {}
+	dic = {}.formkets([“name”,”age”],None)
+
+长度	
+	len(dic)
+
+内容判断 注意判断是通过key来判断
+	in
+	not in 
+
+删除元素
+	del
+	pop(“key”,[default])
+	popItem()
+
+取值
+	dict.keys() 所有key
+	dict.values() 
+	dict.items()
+	dict.get(key,[default]) 
+
+更新
+	dict.update(an dict2) 使用dict2来更新dict 如果没有就添加 已存在则更新value
+	
+	setDefault(key,value) 给key设置默认值 如果已经有了该k-v 则不做任何修改 没有则添加 返回值为value
+		简单说 直接赋值会覆盖原来值  使用setDefault则不会出现这种情况
+
+补课-元组
+	可以把它看做是不可变列表 只能读取数据
+	
+定义元组
+	
+不可变示例
+
+分析(1,2,3,[1,2,3])
+
+
+取出数据
+	索引 正反
+	切片
+
+内容运算
+	in
+	not in
+	index
+	count
+
+遍历元素
+for in 
+
+补课-列表
+	列表是一种可以存放
+定义列表
+
+列表常规操作
+	索引取值 正反
+	切片
+
+内容运算
+	in
+	not in
+	count(elm)
+	index
+	reverse
+	sort(reverse = true)
+
+添加元素
+	append(elm)
+	insert(index,elm)
+	extend( list | str)
+
+删除元素
+	del
+	remove
+	pop(|arg|)
+	clear
+
+遍历
+	for in
+复制
+	copy
+
+
+
+
+
+	
+
+
+
+
+1
+	
+
+
+
+
+

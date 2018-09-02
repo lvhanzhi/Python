@@ -1,0 +1,143 @@
+正则:
+    re模块
+    re(RegEx)正则表达式(带有特殊含义的符号或者符号的组合),过滤字符串
+    re模块的内部实现 不是python 而是调用了c库
+字符:
+. 换行符以外的任意字符
+    print(re.findall('.','\n'))#[]
+    print(re.findall('.','\nabc123_+/*\t'))#['a', 'b', 'c', '1', '2', '3', '_', '+', '/', '*', '\t']
+\w 任意数字字母下划线
+    print(re.findall('\w','12ab_()*\n\t'))#['1', '2', 'a', 'b', '_']
+    \W正好和\w相反
+\s 任意的空白符
+    print(re.findall('\s','\n\s\d\t1a_*-'))#['\n', '\t']
+    \S与\s相反
+\d 数字
+    print(re.findall('\d','123abc_=\n\t*'))#['1', '2', '3']
+    \D与\d相反
+\b单词边界  指的是单词的末尾
+    print(re.findall("h\\b","helloh hih"))
+    print(re.findall("h\\B","hellhoh  hih"))
+\t制表符
+    print(re.findall('\t','\t\n\d_=-*1a'))#['\t']
+\n换行符
+    print(re.findall('\n','\n\t_12sad*'))#['\n']
+^ 字符串的开头
+    print(re.findall('^a','alex'))#['a']
+    print(re.findall('^a','egon'))#[]
+^非的意思
+    print(re.findall('[^0-9]','123'))#[]
+$ 字符串的结尾
+    print(re.findall('x$','alex'))#['x']
+    print(re.findall('x$','egon'))#[]
+| 或
+    print(re.findall('a|b','abc123'))#['a', 'b']
+() 表示一个组
+    print(re.findall('(01)(ab)','01abd'))#[('01', 'ab')]
+    print(re.findall('(01)(ab)','0abd'))#[]
+[] 字符组
+    print(re.findall('[0-9]','123abc'))#['1', '2', '3']
+    print(re.findall('[a-z]','123abc'))#['a', 'b', 'c']
+[^] 匹配字符组以外的所有字符
+    print(re.findall('[^0-9]','123abc-_=\n'))
+    #['a', 'b', 'c', '-', '_', '=', '\n']
+字符集:
+李[]*
+    print(re.findall('李[杰和李莲英和二棍子]*','李杰和李莲英和二棍子'))
+李[^]*
+    print(re.findall('李[^和]*','李杰和李莲英和二棍子'))
+量词:
+* 0或更多次
+    print(re.findall('\d*','123456ab12'))#['123456', '', '', '12', '']
++ 一次或更多
+? 0次或一次
+{n} 重复n次
+    print(re.findall('\d{5}','123456ab12'))#['12345']
+    print(re.findall('\d{1}','123456ab12'))#['1', '2', '3', '4', '5', '6', '1', '2']
+{n,m} 重复n到m次(碰到符合的一串全部拿来,超过范围的,切割一下,但是剩下的必须符合范围才能取)
+    print(re.findall('\d{1,5}','123456ab12'))#['12345', '6', '12']
+    print(re.findall('\d{4,5}','123456ab12'))#['12345']
+组合:
+.^$
+    print(re.findall('海.','海燕海角海东'))#['海燕', '海角', '海东']
+    print(re.findall('^海.','海燕海角海东'))#['海燕']
+    print(re.findall('海.$','海燕海角海东'))#['海东']
+*+?{}
+    print(re.findall('李.?','李杰和李莲英和二棍子'))#['李杰', '李莲']
+    print(re.findall('李.*','李杰和李莲英和二棍子'))#['李杰和李莲英和二棍子']
+    print(re.findall('李.+','李杰和李莲英和二棍子'))#['李杰和李莲英和二棍子']
+    print(re.findall('李.{1,2}','李杰和李莲英和二棍子'))#['李杰和', '李莲英']
+贪婪匹配:
+.*
+    print(re.findall('李.*','李杰和李莲英和二棍子'))#['李杰和李莲英和二棍子']
+.+
+    print(re.findall('李.+','李杰和李莲英和二棍子'))#['李杰和李莲英和二棍子']
+.?
+    print(re.findall('李.?','李杰和李莲英和二棍子'))#['李杰', '李莲']
+.{n,m}
+    print(re.findall('李.{0,2}','李杰和李莲英和二棍子'))#['李杰和', '李莲英']
+.{n,}
+    print(re.findall('李.{0,}','李杰和李莲英和二棍子'))#['李杰和李莲英和二棍子']
+惰性匹配:
+.*?
+    print(re.findall('李.*?','李杰和李莲英和二棍子'))#['李', '李']
+.+?
+    print(re.findall('李.+?','李杰和李莲英和二棍子'))#['李杰', '李莲']
+.??
+    print(re.findall('李.??','李杰和李莲英和二棍子'))#['李', '李']
+.{n,m}?
+    print(re.findall('李.{0,2}?','李杰和李莲英和二棍子'))#['李', '李']
+.{n,}?
+    print(re.findall('李.{0,}?','李杰和李莲英和二棍子'))#['李', '李']
+总结贪婪和非贪婪:
+    贪婪:.后面可以跟多个的时候,取越多的(.?取一个)
+    贪婪转非贪婪后面加个?
+    非贪婪:取越少的
+分组:
+    匹配身份证号:
+        print(re.findall('^[1-9]\d{13,16}[0-9x]$','33032119970125445x'))
+
+re模块的方法:
+re模块是python提供给我们可以方便操作正则的一个工具
+1.re,findall()#返回所有满足匹配条件的结果,放在列表里.找不到则返回空列表
+    print(re.findall('e','alex love egon'))#['e', 'e', 'e']
+    findall会优先把匹配结果组里内容返回,如果想要匹配结果,取消权限即可(?:)
+    print(re.findall('www.(baidu|oldboy).com','www.oldboy.com'))#['oldboy']
+    print(re.findall('www.(?:baidu|oldboy).com','www.oldboy.com'))#['www.oldboy.com']
+2.re.search()#只找一个,找到则返回一个包含匹配信息的对象,否则返回None
+    print(re.search('a','alex love egon'))#<_sre.SRE_Match object; span=(0, 1), match='a'>
+print(re.search('a','alex love egon').group())#a(找到则返回那个字符,找不到则报错)
+3.re.match()#查找这个字符串是否以其开头
+    存在:print(re.match('e','elex love egon'))#<_sre.SRE_Match object; span=(0, 1), match='e'>
+    print(re.match('e','elex love egon').group())#e
+    不存在:print(re.match('e','alex'))#None
+4.re.split()#切掉的如果是开头就用''替换,否则不用''替换,分隔成列表.没有[]的表示一个整体
+    print(re.split('a','abc'))#['', 'bc']
+    print(re.split('ab','abc'))#['', 'c']
+    print(re.split('[ab]','abc'))#['', '', 'c']
+    print(re.split('[a]','abc'))#['', 'bc']
+    print(re.split('a','bcd'))#['bcd']
+    print(re.split('e','alex'))#['al', 'x']
+    保留分隔符的方法
+    print(re.split('\d+','eval123dasda9dg'))#['eval', 'dasda', 'dg']
+    print(re.split('(\d+)','eva123dasda9dg'))#['eva', '123', 'dasda', '9', 'dg']
+5.re.sub()替换,后面带的数字就是替换几个.默认是全部替换
+    print(re.sub('e','E','alex love egon'))#alEx lovE Egon
+    print(re.sub('e','E','alex love egon',2))#alEx lovE egon
+re.subn()显示替换的个数
+print(re.subn('e','E','alex love egon'))#('alEx lovE Egon', 3)返回元祖
+6.re.compile#将正则表达式编译成一个正则表达式对象
+    obj=re.compile('\d{3}')#re.compile('\\d{3}')
+    ret=obj.search('abc12345eeee')#123
+7.re.finditer#返回的是一个存放匹配结果的迭代器
+    ret=re.finditer('\d','dsf546sfsc')#<callable_iterator object at 0x000001B543E579B0>
+    for i in ret:
+        print(i.group())#5 4 6
+小练习:
+    用正则表达式将c 和shell换位置
+    src = "c++|java|python|shell"
+    import re
+    src = "c++|java|python|shell"
+    res=re.sub('(.+?)(\|.+?\|.+?\|)(.+)',r'\3\2\1',src)#组之间交换位置
+    print(res)
+

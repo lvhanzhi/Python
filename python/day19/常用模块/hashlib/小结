@@ -1,0 +1,49 @@
+hash模块
+1 什么是hash
+    hash是一种算法，该算法接受传入的内容，经过运算得到一串hash值
+    如果把hash算法比喻为一座工厂
+    那传给hash算法的内容就是原材料
+    生成的hash值就是生产出的产品
+
+2、为何要用hash算法
+    hash值/产品有三大特性：
+        1、只要传入的内容一样，得到的hash值必然一样
+        2、只要我们使用的hash算法固定，无论传入的内容有多大，
+            得到的hash值的长度是固定的
+        3、不可以用hash值逆推出原来的内容
+
+        基于1和2可以在下载文件时做文件一致性校验
+        基于1和3可以对密码进行加密
+3.怎么用
+    1、造出hash工厂
+    m=hashlib.md5()
+    2.运送原材料
+    m.update('张铭言'.encode('utf8'))
+    3.产出hash值
+    print(m.hexdigest())
+4.文件一致性校验
+import hashlib,os
+md5_obj=hashlib.md5()
+file_size=os.path.getsize('db.txt')
+f=open('db.txt','rb')
+while file_size>0:
+    if file_size>1024:
+        content=f.read(1024)
+        file_size-=1024
+    else:
+        content=f.read(file_size)
+        file_size-=file_size
+    md5_obj.update(content)
+print(md5_obj.hexdigest())
+5.对文明密码进行加密
+import hashlib
+user='egon'
+pwd='123'
+md5_obj=hashlib.md5(user.encode('utf8'))
+md5_obj.update(pwd.encode('utf8'))
+print(md5_obj.hexdigest())
+6.python 还有一个 hmac 模块，它内部对我们创建 key 和 内容 进行进一步的处理然后再加密:
+import hmac
+m=hmac.new('小鸡炖蘑菇'.encode('utf8'))
+m.update('hello'.encode('utf8'))
+print(m.hexdigest())

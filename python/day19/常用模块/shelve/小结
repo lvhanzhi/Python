@@ -1,0 +1,16 @@
+shelve模块
+    shelve也是python提供给我们的序列化工具，比pickle用起来更简单一些。
+    shelve只提供给我们一个open方法，是用key来访问的，使用起来和字典类似。
+存:
+    import shelve
+    f=shelve.open('shelve_file')
+    f['a']={
+        'name':'egon'
+    }
+    f.close()
+取:
+    import shelve
+    f=shelve.open('shelve_file')
+    message=f['a']
+    f.close()
+    print(message)

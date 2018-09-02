@@ -1,0 +1,786 @@
+面向对象
+    核心”对象“二字，对象指的是特征与技能的结合体，
+    基于该思想编写程序就好比在创造一个世界，你就是这个世界的上帝，是一种上帝式的思维方式
+    优点：可扩展性强
+    缺点：编程的复杂度高于面向过程
+1、类
+    对象是特征与技能的结合体，那类就是一系列对象相同的特征与技能的结合体
+2、在现实世界中：一定先有对象，后来随着人类文明的发展总结出的类
+      对象是具体存在的，而类只是一种抽象概念
+3、在程序中,务必保证：先定义类，后调用类来产生对象
+注意：
+    定义函数是只检测代码,不执行函数
+    在定义类的阶段会立刻执行类体内的代码，然后将产生的名字存放于类名称空间中
+在程序中：必须先定义类 - -----》调用类 - -----》对象
+
+class OldboyStudent:#类
+    school='Oldboy'#属性
+    def choose_course(self):#方法
+        print('is choosing course')
+    print('===========>')
+#查看类的名称空间
+print(OldboyStudent.__dict__)
+print(OldboyStudent.__dict__['school'])
+print(OldboyStudent.school)#查看类属性
+print(OldboyStudent.choose_course)#查看类方法
+#增
+OldboyStudent.country='China'
+print(OldboyStudent.country)
+#改
+OldboyStudent.country='English'
+print(OldboyStudent.country)
+#删
+del OldboyStudent.school
+# print(OldboyStudent.school)
+
+调用类发生哪些事：
+1、首先会产生一个空对象stu1
+2、会自动触发类内部的__init__函数
+3、然后将空对象stu1连同调用类时括号内的参数组成（stu1,"马冬梅",18,'female'）,将这四个参数一起传给__init__函数
+调用类---》产生类的对象，该对象也可以称为类的一个实例，调用类的过程也称为类的实例化
+__init__方法:在调用类/实例化时自动触发,为对象初始化自己独有的特征
+class Person:
+    role = '中国人'
+    def __init__(self, name, sex):
+        self.name = name
+        self.sex = sex
+    def walk(self):
+        print('walking...')
+hy=Person('haiyan','female')#类的实例化
+#类名() ===>执行Person.__init__()
+print(hy.name)#查看属性
+print(hy)#返回的是一个对象
+hy.walk()#调用方法
+
+
+class Person:
+    role='中国人'
+    def walk(self):
+        print('walk...')
+hy=Person()
+#一些特殊类的属性
+print(Person.__name__)#Person#查看类的名字(字符串类型)
+print(Person.__dict__)#查出的是一个字典
+print(dir(Person))#查看类的方法(列表)
+print(Person.__module__)#查看类所在的模块(执行文件/模块)
+print(Person.__class__)
+print(isinstance(hy,Person))#判断对象是否是类的实例
+
+小练习:
+class Person:
+    def __init__(self,name,attack,life_value):
+        self.name=name
+        self.attack=attack
+        self.life_value=life_value
+    def attacking(self):
+        dog.life_value=dog.life_value-self.attack
+class Dog:
+    def __init__(self,name,attack,life_value):
+        self.name=name
+        self.attack=attack
+        self.life_value=life_value
+    def attacking(self):
+        egon.life_value=egon.life_value-self.attack
+egon=Person('egon',20,100)
+dog=Dog('dog',10,100)
+print('egon的生命',egon.life_value)
+print('dog的生命',dog.life_value)
+egon.attacking()
+print('dog的生命',dog.life_value)
+print('egon的生命',egon.life_value)
+dog.attacking()
+print('egon的生命',egon.life_value)
+print('dog的生命',dog.life_value)
+
+小结:
+1、类的数据属性:是给对象用的，而且直接共享给所有对象用的，内存地址都一样
+2、类的函数属性：也是给对象用，但是绑定给对象用的，绑定到不同的对象就是不同的
+绑定方法的特殊之处：
+    1、 绑定给谁就应该由谁来调用 2、谁来调用就会把谁当做第一个参数传入
+一切皆对象:在python3中统一了类与类型的概念，类即类型
+
+
+
+组合:
+组合：组合指的是，在一个类中以另外一个类的对象（也就是实例）作为数据属性，称为类的组合
+组合的两种方式:1.在__init__方法里面组合 2.在外面组合
+例子:(算圆环的面积)
+from math import pi
+class Circle:
+    def __init__(self,r):
+        self.r=r
+    def perimater(self):
+        return pi*2*self.r
+    def area(self):
+        return pi*self.r*self.r
+class Circle_ring:
+    def __init__(self,r1,r2):
+        self.out_r=max(r1,r2)
+        self.in_r=min(r1,r2)
+        self.out_size=Circle(self.out_r)
+        self.in_size=Circle(self.in_r)
+    def area(self):
+        return self.out_size.area()-self.in_size.area()
+    def perimater(self):
+        return self.out_size.perimater()+self.in_size.perimater()
+r1=Circle_ring(10,20)
+print(r1.area())
+print(r1.perimater())
+
+方式一:在__init__方法里面组合
+class Birthday:
+    def __init__(self,year,month,day):
+        self.year=year
+        self.month=month
+        self.day=day
+class Course:
+    def __init__(self,name,price,period):
+        self.name=name
+        self.price=price
+        self.period=period
+class Teacher:
+    def __init__(self,name,year,month,day,price,period,salary):
+        self.name=name
+        self.salary=salary
+        self.birthday=Birthday(year,month,day)
+        self.course=Course(name,price,period)
+egon=Teacher('egon',1998,5,5,19800,5.5,2000)
+#实例化方式一:
+print(egon.birthday.year)
+print(egon.course.period)
+#实例化方式二:
+egon.birthday=Birthday(1996,10,1)
+print(egon.birthday.year)
+
+方式二:在外面组合
+class Birthday:
+    def __init__(self,year,mothday,day):
+        self.year=year
+        self.mothday=mothday
+        self.day=day
+class Course:
+    def __init__(self,name,period,price):
+        self.name=name
+        self.period=period
+        self.price=price
+class Teacher:
+    def __init__(self,name,age,sex):
+        self.name=name
+        self.age=age
+        self.sex=sex
+egg=Teacher('egon',18,'male')
+egg.birthday=Birthday(2018,8,14)
+print(egg.birthday.year)
+egg.course=Course('python','5.5',158000)
+print(egg.course.name)
+
+
+继承:
+    1.继承是一种新建类的方式,在python中支持一个儿子继承多个爹
+    2.新建的类称为派生类或子类(子类会继承父类的属性)
+    3.父类可以称为基类或者超类
+    在python中的继承分为:单继承或多继承
+    在python3中如果没有继承的父类,就会继承object类(新式类)#python3中没有经典类了
+    在python2中如果没有继承父类,就不会继承object类(经典类)
+    object是所有python的父类
+    优点:减少代码冗余
+    模板:
+    class ParentClass1:#定义父类
+        pass
+    class ParentClass2:#定义父类
+        pass
+         pass
+    class SubClass2(ParentClass1,ParentClass2):#python支持多继承,用逗号分隔开多个继承的类
+        pass
+print(Dog.__bases__)#查看继承的所有父类
+print(Dog.__base__)#查看从左到右第一个继承的第一个类
+抽象：抽取类似或者说比较像的部分（也就是提取一类事物的特点，范围越来越大，共性越来越少）#大范围到小范围的过程
+继承：是基于抽象的过程，通过编程语言去实现它，肯定是先经历抽象这个过程，才能通过继承的方式去表达出抽象的结构#小范围到大范围的过程
+
+菱形继承:当一个子类继承多个父类,多个父类最终继承同一个类,称为菱形继承
+#经典类深度优先:一条路走到底,再走旁边的分支
+#新式类广度优先:走到最后第二个,再走旁边分支
+c3算法:
+    class A:
+        def test(self):
+            print('a')
+    class B(A):
+        def test(self):
+            print('b')
+    obj=B()
+    print(B.mro())#查看附列的查找顺序
+
+
+派生:
+派生:在子类中调用新属性,在使用中,以自己为准
+1.在父类的基础上产生的子类叫派生类.父类没有的方法,子类里面有就叫派生方法
+注意:
+    1.子类可以使用父类的所有属性和方法
+　　2.如果子类有自己的方法，就执行自己的；如果子类没有自己的方法，就会找父类的。
+　　3.如果子类里面没有找到，父类里也没有找到，就会报错
+　　4.如果子类中实现了调用父类的方法
+　　　　在类内：super(子类，self).方法名（）  supper().__init__(参数)
+　　　　在类外：super(子类名，对象名).方法名（）
+重写:
+2.父类里有，子类也有的方法，就叫做方法的重写
+方法重写的两种方式:
+方式一:指名道姓法,直接用,与继承无关
+# class People:
+#     countyr='China'
+#     def __init__(self,name,age,sex):
+#         self.name=name
+#         self.age=age
+#         self.sex=sex
+#
+# class Teacher(People):
+#     def __init__(self,name,age,sex):
+#         People.__init__(self,name,age,sex)
+#
+# s1=Teacher('张三',5,'male')
+# print(s1.__dict__)
+
+方式二:严格以继承属性来查找
+#super()会得到一个特殊的对象,该对象就是专门用来访问父类中的属性(按照继承关系)
+# super(Teacher.self).__init__(name,age,sex),在python2中要写完整
+# class People:
+#     countyr='China'
+#     def __init__(self,name,age,sex):
+#         self.name=name
+#         self.age=age
+#         self.sex=sex
+#
+# class Teacher(People):
+#     def __init__(self,name,age,sex):
+#         super().__init__(name,age,sex)
+#
+# s1=Teacher('张三',5,'male')
+# print(s1.__dict__)
+
+
+class A:
+    def f1(self):
+        print('A.f1')
+class B:
+    def f2(self):
+        super().f1()
+class C(B,A):
+    pass
+obj=C()
+obj.f2()
+
+接口类:
+//在python中，默认是没有接口类的
+#就是为了提供标准，约束后面的子类.接口类的方法,子类必须要有,否则报错
+1.接口也就是做约束，让下面的类的方法都按照接口类中给出的方法去定义。
+    如果接口类里面有的方法类里面没有，那么那个类就不能被实例化。（字面理解）
+2.它又叫“接口继承”
+    接口继承实质上是要求“做出一个良好的抽象，这个抽象规定了一个兼容接口，使得外部调用者无需关心具体细节，可一视同仁的处理实现了特定接口的所有对象”——这在程序设计上，叫做归一化。
+       （在抽象类的基础上）
+　　　　在python中，默认是没有接口类的
+　　　　接口类不能被实例化（如果实例化会报错）
+　　　　接口类中的方法不能被实现
+from abc import ABCMeta,abstractmethod
+class Aplayment(metaclass=ABCMeta):
+    @abstractmethod
+    def pay(self,money):
+        pass
+class Wechat(Aplayment):
+    def pay(self,money):
+        print('微信支付',money)
+w1=Wechat()
+w1.pay(200)
+
+
+抽象类:
+//在python中，默认是有抽象类的
+父类的方法，子类必须实现
+抽象类（父类）的方法可以被实现,抽象类不能被实例化
+
+from abc import ABCMeta,abstractmethod
+class Animal(metaclass=ABCMeta):
+    @abstractmethod
+    def eat(self):
+        print('打开粮食袋子')
+        print('放一个吃饭的碗里')
+        print('把粮食倒在碗里')
+    @abstractmethod
+    def sleep(self):
+        pass
+class Dog(Animal):
+    def eat(self):
+        super().eat()
+        print('dong is eating')
+    def sleep(self):
+        print('dog is sleep')
+d=Dog()
+d.eat()
+
+抽象类和接口类的区别:接口类不能实现方法，抽象类可以实现方法里面的内容
+抽象类和接口类的相同点：都是用来做约束的，都不能被实例化
+抽象类和接口类的使用：
+　　当几个子类的父类有相同的功能需要被实现的时候就用抽象类
+　　当几个子类有相同的功能，但是实现各不相同的时候就用接口类
+        在继承抽象类的过程中，我们应该尽量避免多继承；
+        而在继承接口的时候，我们反而鼓励你来多继承接口
+python中的抽象类和接口类在Java里面的区别
+　　接口类支持多继承
+　　抽象类只支持单继承
+接口隔离原则：使用多个专门的接口，而不是用单一的总接口。即客户端不应该依赖那些不需要的接口
+
+多态:(我感觉接口类和抽象类是多态的父类,多态就是接口类或抽象类下面的多个子类的一种统称)
+多态指同一种事物的多种形态
+多态的父类不能被实例化
+为何要用多态:
+    多态性:
+        继承同一个类的多个子类中有相同的方法名
+        那么子类产生的对象就可以不用考虑具体的类型而直接调用功能
+from abc import ABCMeta,abstractmethod
+class Animal(metaclass=ABCMeta):#接口类
+    @abstractmethod
+    def eat(self):pass
+class Cat(Animal):#动物的形态之一:猫
+    def eat(self):
+        print('cat eat')
+class Dog(Animal):#动物的形态之一:狗
+    def eat(self):
+        print('dog eat')
+class Pig(Animal):pass #动物的形态之一:猪
+def eat_func(animal_obj):
+    animal_obj.eat()
+c=Cat()
+eat_func(c)
+鸭子类型:只要你叫的像鸭子.并且你走路的样子也像鸭子,那你就是鸭子
+class TxtFile:
+    def read(self):
+        pass
+    def write(self):
+        pass
+class DiskFile:
+    def read(self):
+        pass
+    def write(self):
+        pass
+
+
+封装:
+    如何隐藏属性:在属性前加上__开头
+            这种隐藏是对外不对内的,即在类的内部可以直接访问,而在类的外部则无法直接访问
+    封装的真实意图与用法
+    property
+绑定方法与非绑定方法
+什么是封装:
+    封:属性对外是隐藏的,但对内是开放的
+    装:申请一个名称空间,往里装一系列名字/属性
+为什么要封装:
+    封装数据属性的目的
+        首先定义属性的目的就是为了给类外部的使用的,
+        隐藏之后就是为了不让外部直接使用,需要类内部开辟一个接口
+        然后让类外部的使用通过接口来间接地操作隐藏的属性
+        精髓在于:我们可以在接口上附加任意逻辑,从而严格控制使用者对属性的操作
+        封装函数属性:
+            首先定义属性的目的就是为了给类外部使用的,
+            隐藏函数属性是为了不让外部直接使用,需要类内部开辟一个接口
+            然后在接口内去调用隐藏的功能
+            精髓在于:隔离了复杂度
+class People:
+    __country='China'#封装类属性的私有属性(就是类属性前加__)
+    def __init__(self,name):
+        self.__name=name#封装类对象的私有属性
+    def __eat(self):#封装类方法的私有属性
+        print('eatting...')
+p=People('egon')
+print(p._People__country)
+print(p._People__name)
+p._People__eat()
+
+class People:
+    __country = 'China'
+
+    def __init__(self, name, age, sex):
+        self.name = name
+        self.age = age
+        self.sex = sex
+
+    def eat(self):
+        print('eat...')
+        print(People.__country)
+p = People('张三', 88, 'male')
+print(p.__country)
+p.eat()
+print(p._People__country)
+
+查:
+class People:
+    def __init__(self,name,age):
+        self.__name=name
+        self.__age=age
+    def tell_info(self):
+        print(self.__name,self.__age)
+peo1=People('egon',18)
+peo1.tell_info()
+
+改
+class People:
+    country = 'China'
+
+    def __init__(self, name, age, sex):
+        self.__name = name
+        self.__age = age
+        self.__sex = sex
+
+    def set_name(self, x):
+        if type(x) is not str:
+            print('名字必须是str类型')
+            return
+        self.__name = x
+
+
+p1 = People('张三', 88, 'male')
+p1.set_name(1)
+print(p1.__dict__)
+自己添加一个错误
+raise TypeError('类型错误')
+
+
+
+property:
+property 装饰器用于将被装饰的方法伪装成一个数据属性,在使用时可以不用加括号而直接调用
+class People:
+    def __init__(self,name,weight,height):
+        self.name=name
+        self.weight=weight
+        self.height=height
+    @property
+    def bmi(self):
+        return self.weight/(self.height**2)
+p=People('张三',50,1.5)
+print(p.bmi)
+
+
+class People:
+    def __init__(self,name):
+        self.__name=name
+    @property
+    def name(self):
+        return self.__name
+    @name.setter
+    def name(self,name):
+        if not isinstance(name,str):
+            raise TypeError('名字必须是str')
+        self.__name=name
+    @name.deleter
+    def name(self):
+        raise TypeError('不能删除')
+p=People('张三')
+p.name='李四'
+del p.name
+print(p.name)
+
+
+
+绑定方法和非绑定方法:
+1、绑定方法
+    特性：绑定给谁就应该由谁来调用，谁来调用就会将谁当作第一个参数自动传入
+         《《《精髓在于自动传值》》》
+    绑定方法分为两类:
+        1.1 绑定给对象方法
+            在类内部定义的函数（没有被任何装饰器修饰的），默认就是绑定给对象用的
+        1.2 绑定给类的方法：
+            在类内部定义的函数如果被装饰器@classmethod装饰，
+            那么则是绑定给类的，应该由类来调用，类来调用就自动将类当作第一个参数自动传入
+2、非绑定方法
+    类中定义的函数如果被装饰器@staticmethod装饰，那么该函数就变成非绑定方法
+    既不与类绑定，又不与对象绑定，意味着类与对象都可以来调用
+    但是无论谁来调用，都没有任何自动传值的效果，就是一个普通函数
+如果函数体代码需要用外部传入的对象，则应该将该函数定义成绑定给对象的方法
+如果函数体代码既不需要外部传入的类也不需要外部传入的对象，则应该将该函数定义成非绑定方法/普通函数
+
+静态方法和类方法:
+@classmethod #类方法,直接用类名去掉用类里函数(默认有self或cls对象传进来)#绑定方法
+@staticmethod #静态方法 (没有默认参数)#非绑定方法
+但这两种方法都不推荐使用
+class People:
+    country='China'
+    def dreak(self):#普通方法
+        print('喝水',self.country)
+    @classmethod  # 类方法
+    def sleep(cls):
+        print('sleep in', cls.country)
+    @staticmethod #静态方法
+    def eat():
+        print('eatting...',People.country)
+egon=People()
+egon.dreak()#普通方法(绑定方法)
+People.eat()# 类方法(绑定方法)
+People.sleep()#静态方法(非绑定方法)
+
+
+内置函数:
+isinstance 和 issubclass
+class Foo:
+    pass
+obj=Foo()
+print(isinstance(obj,Foo))#判断是否为实例
+l=[1,2]#python3中同一了类和类型的概念
+print(isinstance(l,list))#判断类型
+-------------------------------------
+class Parent:
+    pass
+class Sub(Parent):
+    pass
+print(issubclass(Sub,Parent))#判断是否是子类
+print(isinstance(Parent,object))
+
+反射:
+    通过字符串来操作类或者对象的属性
+    hasattr(对象,属性名) 有没有这个属性
+    getattr(对象,属性名,找不到返回的值) 找不到返回None
+    setattr 设置属性
+    delattr 删除属性
+    注意:属性名要加""
+class People:
+    country='China'
+    def __init__(self,name):
+        self.name=name
+egon=People('egon')
+#hasattr
+print(hasattr(egon,'name'))#True
+print(hasattr(egon,'country'))#True
+print(hasattr(egon,'age'))#False
+#getattr
+print(getattr(egon,'name'))#egon
+print(getattr(egon,'country'))#China
+print(getattr(egon,'age'))#报错
+print(getattr(egon,'age',None))#None
+#setattr
+setattr(egon,'name','tom')#存在则修改属性
+print(egon.name)#tom
+setattr(egon,'age',18)#不存在则创建属性
+print(egon.age)#18
+#delattr
+delattr(egon,'name')
+print(egon.__dict__)#{}
+
+
+自定义内置方法来定制类的功能
+__str__
+#在对象被打印时，自动触发，应该在该方法内采集与对象self有关的信息，然后拼成字符串返回
+class People:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def __str__(self):
+        return '<name:%s age:%s>'%(self.name,self.age)
+obj=People('egon',18)
+print(obj)#<name:egon age:18>
+__del__
+# __del__会在对象被删除之前自动触发,做回收系统资源相关的事情
+class People:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def __del__(self):
+        print('删除成功')
+obj=People('egon',18)
+del obj#删除成功
+
+
+
+元类
+什么是元类:
+    在python中一切皆对象，那么我们用class关键字定义的类本身也是一个对象.负责产生该对象的类称之为元类，即元类可以简称为类的类
+为何要用元类:
+    元类是负责产生类的，所以我们学习元类或者自定义元类的目的
+    是为了控制类的产生过程，还可以控制对象的产生过程
+
+创建类的两种方法:
+大前提：如果说类也是对象的话，那么用class关键字的去创建类的过程也是一个实例化的过程
+该实例化的目的是为了得到一个类，调用的是元类
+class调用的是默认的类type,继承type的是元类
+方式一:
+    用默认的元类type
+    创建类的3要素:类名/基类(object)/类的名称空间
+------------------------------------
+exec内置函数的用法:
+    strs="""#str类型的代码
+    name='egon'
+    age=18
+    """
+    local_dic={}#定义一个空字典,用来放执行exec后strs代码的名字,所以locla_dic也可以算是一个名称空间
+    exec(strs,{},local_dic)#执行exec函数(strs类型的代码,全局作用域,放strs产生的代码)
+    print(local_dic)#{'name': 'egon', 'age': 18}#输出local_dic
+------------------------------------
+#准备阶段
+class_name='People'#类名
+class_bases=(object,)#基类  (逗号必须要加,否则会报错)
+#类的名称空间
+class_dic={}
+class_body="""
+country='China'
+def __init__(self,name,age):
+    self.name=name
+    self.age=age
+def eat(self):
+    print('%s is eating'%self.name)
+"""
+exec(class_body,{},class_dic)
+#创建阶段
+People=type(class_name,class_bases,class_dic)#创建了一个叫People的类
+obj1=People('egon',18)#实例化
+print(obj1.name)#egon
+obj1.eat()#egon is eating
+
+分析class的运行原理:
+1.拿到一个字符串格式的类名class_name='People'
+2.拿到一个类的基类们class_bases=(obejct,)
+3.执行类体代码,拿到一个类的名称空间class_dic={...}
+4.调用People=type(class_name,class_base,class_dic)
+
+方式二:
+    用自定义的元类
+用元类控制产生的类必须要有注释:
+#自定义元类
+class Mymeta(type):#只有继承了type类才能称之为一个元类,否则就是一个普通的自定义类(用自定义的元类控制类的产生过程)
+    def __init__(self,class_name,class_base,class_dic):#自动传People里的类名,基类,类的名称空间
+        if class_dic.get('__doc__') is None or len(class_dic.get('__doc__').strip())==0:#判断注释是否为空或不存在
+            raise TypeError('必须要有文档注释')#如果没有注释就报错
+        if not class_name.istitle():#判断类名必须是首字母大写
+            raise TypeError('类名必须是首字母大写')
+        super(Mymeta,self).__init__(class_name,class_base,class_dic)#保险起见,重用一下父类的功能
+#用自定义的元类创建的类
+class People(object,metaclass=Mymeta):#继承object类和调用自定义的Mymeta元类
+    """ 这是文档注释 """
+    country='China'
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def eat(self):
+        print('%s is eating'%self.name)
+egon=People('egon',18)
+print(egon.name)
+#用__doc__查看注释
+-------------------------------------------------------
+__call__
+自定义元类来控制类的调用过程,即类的实例化过程
+class Foo:
+    def __call__(self, *args, **kwargs):#让obj这个对象变成一个可调用的对象,该方法会在调用对象时自动触发
+        print(self)
+        print(args)
+        print(kwargs)
+obj=Foo()
+obj(1,2,3,x=1)#没有__call__时对象不能被调用
+
+class Mymeta(type):
+    def __call__(self, *args, **kwargs):#在自定义的元类里写__call_,控制的是People在调用时自动触发
+        print('running...')
+class People(object,metaclass=Mymeta):
+    country='China'
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def eat(self):
+        print('%s is eating'%self.name)
+People()
+---------------------------------------------------------
+__new__造空对象
+查找顺序:先找自己的,没有就找自定义的元类....
+__init__初始化对象
+
+class Mymeta(type):
+    def __call__(self, *args, **kwargs):
+        #1.先造出一个People的空对象
+        obj=self.__new__(self)
+        #2.为该空对象初始化独有的属性
+        self.__init__(obj,*args,**kwargs)
+        #3.返回一个初始好的对象
+        return obj
+class People(object,metaclass=Mymeta):
+    country='China'
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def eat(self):
+        print('%s is eating'%self.name)
+egon=People('egon',18)
+print(egon)
+print(egon.name)
+
+单例模式:
+    单例模式:基于某种方法实例化多次得到的实例是同一个
+    当实例化多次得到的对象中存放的属性都是一样的情况,应该将多个对象指向同一个内存
+1.文件导入的形式
+s1.py
+class Foo(object):
+    def test(self):
+        print('123')
+v=Foo()
+s2.py
+from s1 import v as v1
+print(v1,id(v1))
+from s1 import v as v2
+print(v2,id(v2))
+
+2.基于类实现的单例模式
+#无法支持多线程情况
+class Singleton(object):
+    def __init__(self):
+        import time
+        time.sleep(1)
+    @classmethod
+    def instance(cls,*args,**kwargs):
+        if not hasattr(Singleton,'_instance'):
+            Singleton._instance=Singleton(*args,**kwargs)
+        return Singleton._instance
+import threading
+def task(arg):
+    obj=Singleton.instance()
+    print(obj)
+for i in range(10):
+    t=threading.Thread(target=task,args=[i,])
+    t.start()
+#支持多线程情况
+import time
+import threading
+class Singleton(object):
+    _instance_lock=threading.Lock()
+    def __init__(self):
+        time.sleep(1)
+    @classmethod
+    def instance(cls,*args,**kwargs):
+        if not hasattr(Singleton,"_instance"):
+            with Singleton._instance_lock:
+                if not hasattr(Singleton,"_instance"):
+                    Singleton._instance=Singleton(*args,**kwargs)
+        return Singleton._instance
+def task(arg):
+    obj=Singleton.instance()
+    print(obj)
+for i in range(10):
+    t=threading.Thread(target=task,args=[i,])
+    t.start()
+time.sleep(20)
+obj=Singleton.instance()
+obj1=Singleton.instance()
+print(obj)
+print(obj1)
+
+3.基于__new__实现的单例模式(最常用)
+import threading
+class Singleton(object):
+    _instance_lock=threading.Lock()
+    def __init__(self):
+        pass
+    def __new__(cls,*args,**kwargs):
+        if not hasattr(Singleton,"_instance"):
+            with Singleton._instance_lock:
+                if not hasattr(Singleton,"_instance"):
+                    Singleton._instance=object.__new__(cls)
+        return Singleton._instance
+def task(arg):
+    obj=Singleton()
+    print(obj)
+for i in range(10):
+    t=threading.Thread(target=task,args=[i,])
+    t.start()
+4.基于metaclass(元类)实现的单例模式
+

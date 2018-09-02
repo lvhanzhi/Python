@@ -1,0 +1,28 @@
+默写99乘法标 
+	金字塔
+
+必做:
+	1.昨日选做题 博客中有 http://www.cnblogs.com/linhaifeng/articles/7133357.html#_label3 
+
+	2.要求用户输入五个数字存储到列表中, 然后提供三个功能 2.1 打印最大值 2.2 打印最小值 2.3 打印平均数
+
+	3.交换两个列表中的元素,(两个列表元素个数相同)
+
+	4.有以下列表
+		["python","java","C++","PHP","HTML","python","C++","Ruby"]
+		编写代码去除列表中重复的元素
+		
+	5.查看提供的(待处理文本.txt)文件 编写代码取出所有图片的网址 住 不需要直接读取文件  把内容复制到代码找中定义为变量即可
+
+	6.有如下字符串("language,is,perfect,hello,i am jack,python")
+		编写代码 将其修改为"hello i am jack python is perfect language" 字符串
+
+
+选做
+	
+	7.有如下列表
+	  [5,2,1,4,3]
+	  编写代码实现从大到小排序  (百度搜索冒泡排序)
+	8.简单购物车 博客题http://www.cnblogs.com/linhaifeng/articles/7133357.html#_label8
+
+

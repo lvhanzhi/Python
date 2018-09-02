@@ -1,0 +1,42 @@
+socket是什么:
+    Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面,无需深入理解tcp/udp协议,只需要遵循socket的规定去编程，写出的程序自然就是遵循tcp/udp标准的。
+套接字的分类：
+　　基于文件类型的套接字家族：AF_UNIX（在Unix系统上，一切皆文件，基于文件的套接字调用的就是底层的文件系统来取数据，两个套接字进程同时运行在同一机器，可以通过访问同一个文件系统间接完成通信）
+　　基于网络类型的套接字家族：AF_INET  （python支持很多种地址家族，但是由于我们只关心网络编程，所以大部分时候我们只使用AF_INET）
+什么是套接字:
+    我们经常把socket翻译为套接字
+TCP用SOCK_STREAM /UDP用SOCK_DGRAM
+简单版套接字函数:
+    服务端:
+        import socket
+        #1.买手机
+        s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        print(s)#是用来接收链接请求,从而建立链接的
+        #2.插手机卡
+        s.bind(('127.0.0.1',9000))
+        #3.开机
+        s.listen(5)
+        #4.等待电话请求
+        conn,addr=s.accept()#(双向链接的套接字对象,存放客户端ip和端口的小元组)
+        # conn代表双向链接,用来收发消息
+        print('正在接听来自%s的电话'%addr[0])
+        #5.收\发消息
+        msg=conn.recv(1024)#1024接收的最大字节数bytes
+        print(msg.decode('utf8'))
+        conn.send(msg.upper())
+        #6.挂电话链接
+        conn.close()
+        #7.关机
+        s.close()
+    客户端:
+        import socket
+        #1.买手机
+        s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        #2.拨号
+        s.connect_ex(('127.0.0.1',9000))
+        #3.发\收消息
+        s.send('aaa'.encode('utf8'))# 只能发bytes类型
+        msg=s.recv(1024)
+        print(msg.decode('utf8'))
+        #4.挂电话链接
+        s.close()

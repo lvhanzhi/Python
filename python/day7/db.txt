@@ -1,0 +1,1 @@
+['C:\\Users\\2\\Desktop\\python\\day7\\1.txt', 'C:\\Users\\2\\Desktop\\python\\day7\\2.txt', 'C:\\Users\\2\\Desktop\\python\\day7\\z.txt']

@@ -1,0 +1,13 @@
+import socket
+s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.setsockopt(socket.SOL_SOCKET,socket.SOCK_STREAM,1)
+s.bind(('127.0.0.1',9000))
+s.listen(5)
+print('run...')
+conn,addr=s.accept()
+data1=conn.recv(10)
+data2=conn.recv(10)
+print('------->',data1.decode('utf8'))
+print('------->',data2.decode('utf8'))
+conn.close()
+s.close()

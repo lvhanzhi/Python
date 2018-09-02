@@ -1,0 +1,249 @@
+元祖:
+该类型总结:/存多个值/有序/不可变
+
+特点:不能改,只能取/但是元祖里面的列表可以改
+type:tuple
+1 用途：记录多个值，当多个值没有改的需求，此时用元组更合适
+2 定义方式:在()内用逗号分隔开多个任意类型的值
+t=(1,1.3,'xx',('a','b'),[1,2]) #t=tuple((1,1.3,'xx',('a','b'),[1,2]))
+3.常用操作+内置的方法
+1、按索引取值(正向取+反向取)：只能取
+a=(1,2,3,4,5)
+print(a[0:4])#(1, 2, 3, 4)
+print(a[0])#1
+
+2.切片(顾头不顾尾，步长)
+print(a[0:4:2])#(1, 3)
+
+3.计数(count)
+a=(1,2,3,4,5,1,2)
+print(a.count(1))
+#2
+
+4.查(index)
+a=(1,2,3,4,5,1,2)
+print(a.index(5))
+#4
+a=(1,2,3,4,5,1,2,5)
+print(a.index(5,6,8))#6,8是选定的范围
+#7
+
+
+字典:
+type:dict
+该类型总结:存多个值/无序/可变
+特点:value可以是任意类型，而key必须是不可变的类型
+1 用途：记录多个值，每一个值都对应的key用来描述value的作用
+2 定义方式：在{}内用逗号分隔开多 个key:value，其中value可以是任意类型，而key必须是不可变的类型，通常情况下应该str类型
+dic={0:'aaa',1:'bbb',2:'cccc'} #dic=dict({0:'aaa',1:'bbb',2:'cccc'})
+print(dict(x=1,y=2)) #{'x': 1, 'y': 2}
+3 常用操作+内置的方法
+
+1、按key存取值：可存可取
+# dic={'name':'egon'}
+# print(dic['name'])
+# dic['name']='EGON'
+# print(dic)
+# dic['age']=18
+# print(dic)
+2.删
+dic={
+    'name':'egon',
+    'age':18,
+    'sex':'male'
+}
+del dic #删字典
+
+del dic['name']#删key和value(要是没有'name'则报错)
+
+res=dic.pop('age')#删key对应的value,返回value的值(要是没有'age'则报错)
+print(dic)#{'name': 'egon', 'sex': 'male'}
+print(res)#18
+
+res=dic.popitem()#随机删,并返回删掉这一行(字典是空的,报错)
+print(res)
+
+3.键keys()，值values()，键值对items()
+dic={
+    'name':'egon',
+    'age':18,
+    'sex':'male'
+}
+1.输出所有的key
+print(dic.keys())
+dict_keys(['name', 'age', 'sex'])#老母鸡
+for k in dic.keys():#鸡蛋
+    print(k)
+
+2.输出所有的value
+print(dic.values())
+#dict_values(['egon', 18, 'male'])
+for i in dic.values():
+    print(i)
+
+3.输出每个字典里一行
+print(dic.items())
+#dict_items([('name', 'egon'), ('age', 18), ('sex', 'male')])
+
+4.输出key和value
+for key,value in dic.items():
+    print(key,value)
+#name egon
+#age 18
+#sex male
+
+4.快速创建字典(fromkeys)
+dic={}
+dic=dic.fromkeys(['hobby','birthday'],None)
+print(dic)
+#{'hobby': None, 'birthday': None}
+
+5.改
+update:把新的添加到旧的里,以新的为主改旧的
+dic={
+    'name':'egon',
+    'age':18,
+    'sex':'male'
+}
+dic2={
+    'name':'张三',
+    'hobby':'eat'
+}
+dic.update(dic2)
+print(dic)
+#{'name': '张三', 'age': 18, 'sex': 'male', 'hobby': 'eat'}
+
+setdefault(有则不动/返回原值,无则添加/返回新值)
+dic.setdefault('hobby','eat')
+print(dic)
+#{'name': 'egon', 'age': 18, 'sex': 'male', 'hobby': 'eat'}
+
+集合:
+type:set
+总结:存多个值/无序/set可变
+用set()方法转换成集合
+用途: 关系运算,去重
+定义方式: 在{}内用逗号分开个的多个值
+集合的三大特性:
+#1 每一个值都必须是不可变类型*******(不能用列表....)
+#2 元素不能重复
+#3 集合内元素无序
+
+pythons={'李二丫','张金蛋','李银弹','赵铜蛋','张锡蛋','alex','oldboy'}
+linuxs={'lxx','egon','张金蛋','张锡蛋','alex','陈独秀'}
+# 取及报名python课程又报名linux课程的学员:交集
+# print(pythons & linuxs)
+# print(pythons.intersection(linuxs))
+
+# 取所有报名老男孩课程的学员:并集
+# print(pythons | linuxs)
+# print(pythons.union(linuxs))
+
+# 取只报名python课程的学员: 差集
+# print(pythons - linuxs)
+# print(pythons.difference(linuxs))
+
+#差集并赋值给a
+a.difference_update(b)
+print(a)
+
+# 取只报名linux课程的学员: 差集
+# print(linuxs - pythons)
+# print(linuxs.difference(pythons))
+
+# 取没有同时报名两门课程的学员:对称差集
+# print(pythons ^ linuxs)
+# print(pythons.symmetric_difference(linuxs))
+
+# 父集:一个集合是包含另外一个集合
+# s1={1,2,3}
+# s2={1,2}
+# print(s1 >= s2)
+# print(s1.issuperset(s2))
+
+#增
+#增加多个
+a={1,2,3}
+b={5,6,2,3}
+a.update(b)
+print(a)
+#{1, 2, 3, 5, 6}
+
+#增加一个
+a.add(10)
+print(a)
+#{10, 1, 2, 3}
+
+#删
+a.pop()#删除一个值,返回删除的值
+a.remove(2)#删除制定的值2,返回值为None,删除的元素不存在则 报错
+res=a.discard(2)##删除制定的值2,返回值为None,删除的元素不存在 不会报错
+
+#判断
+print(s1.isdisjoint(s2)) #如果两个集合没有交集则返回True
+print(s1.isdisjoint(s2)) #如果两个集合没有交集则返回True
+
+集合去重
+# 局限性
+#1、无法保证原数据类型的顺序
+#2、当某一个数据中包含的多个值全部为不可变的类型时才能用集合去重
+
+字符编码:
+一 储备知识点1
+    运行程序的三大核心硬件
+        cpu
+        内存
+        硬盘
+
+    运行一个程序：
+        代码由硬盘读入内存，cpu从内存中读取指令执行
+
+    强调：程序运行过程中产生的数据一定是最先存放于内存中的
+
+二 储备知识点2
+    运行python程序的三个阶段：python test.py
+        1、先启动python解释器
+        2、将test.py的内容当作普通字符读入内存
+        3、python解释器解释执行读入内存的代码，识别python的语法
+
+        python解释器运行程序的前两个阶段跟文本编辑器一模一样
+        只有第三个阶段不同
+
+
+三 字符编码
+    人操作计算机使用人类认识的字符，而计算机存放都是二进制数字
+    所以人在往计算机里输入内容的时候，必然发生：
+        人类的字符------（字符编码表）--------》数字
+
+
+        ASCII: 用(8位bit二进制数)1Bytes对应一个英文字符
+            8bit= 1Bytes
+            1024Bytes=1KB
+            1024KB=1MB
+            1024MB=1GB
+            1024GB=1TB
+            1024TB=1PB
+
+        GBK：用2Bytes对应一个中文字符，1Bytes对应一个英文字符
+
+        unicode：用2Bytes对应一个字符
+            必须满足两大特点：
+                1、能够兼容万国字符
+                2、与老字符编码都有一种数字与数字的对应关系
+        a 1111 0111
+        a 0000 0000 1111 0111
+
+
+        utf-8:Unicode Transformation Format
+            一个中文字符：3bytes
+            一个英文字符：1bytes
+
+
+        强调：
+            unicode格式的数字--------encode编码---------》utf-8格式的数字
+            unicode格式的数字《--------decode解码《---------utf-8格式的数字
+
+
+
+
+

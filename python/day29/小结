@@ -1,0 +1,83 @@
+异常处理
+1. 什么是异常处理
+    异常是错误发生的信号,一旦程序出错就会产生一个异常,如果该异常没有被应用程序处理,那么该异常就会抛出来,程序的执行也随之终止
+    异常包含三个部分:
+        1. traceback异常的追踪信息
+        2. 异常的类型
+        3. 异常的信息
+    错误分为两大类:
+        1. 语法上的错误:在程序运行前就应该立即修正
+        2. 逻辑上的错误
+2. 为何要异常处理
+    避免程序因为异常而崩溃,所以在应用程序中应该对异常进行处理,从而增强程序的健壮性
+模板：
+try:
+    a[10]
+    print('start...')#如果上面代码有异常就不会执行这里的代码
+except NameError as e:
+    print('NameError',e)
+except KeyError as e:
+    print('KeyError',e)
+except Exception as e:#万能异常
+    print('这是个万能异常')
+else:
+    print('如果没有异常就会执行')
+finally:
+    print('不管有没有异常都会执行')
+print('end...')
+
+
+#主动触发异常
+class People:
+    def __init__(self,name,age):
+        self.__name=name
+        self.__age=age
+    def get_info(self):
+        return '<name:%s age:%s>'%(self.__name,self.__age)
+    def set_info(self,name,age):
+        if not isinstance(name,str):
+            raise TypeError('用户名必须是字符串类型')#主动触发异常
+        if not isinstance(age,int):
+            raise TypeError('年龄必须是int类型')#主动触发异常
+        self.__name=name
+        self.__age=age
+egon=People('egon',18)
+print(egon.get_info())
+egon.set_info('alex','18')
+print(egon.get_info())
+
+# 自定义异常类型(了解)
+class MyException(BaseException):
+    def __init__(self,msg):
+        super().__init__()
+        self.msg=msg
+    def __str__(self):
+        return '<%s>'%self.msg
+raise MyException('自定义异常')#会自动打印MyException
+
+#断言
+print('上半部分,产生数据')
+l=[1,2,3]
+assert len(l)>5  #如果l的长度大于5就会抛出异常
+print('下半部分,处理数据')
+
+
+元类
+    源自一句话:在python中,一切皆对象,而对象都是由类实例化得到的
+对象tea1是调用OldboyTeacher类得到的,如果说一切皆对象,那么OldboyTeacher也是一个对象,只要是对象都是调用一个类实例化得到的,即OldboyTeacher=元类(...),内置的元类是type
+关系:
+    1. 调用元类---->自定义的类
+    2. 调用自定义的类---->自定义的对象
+class关键字创建自定义类的底层的工作原理,分为四步
+# 1. 先拿到类名:'OldboyTeacher'
+# 2. 再拿到类的基类们:(object,)
+# 3. 然后拿到类的名称空间???(执行类体代码,将产生的名字放到类的名称空间也就是一个字典里,补充exec)
+# 4. 调用元类实例化得到自定义的类: OldboyTeacher=type('OldboyTeacher',(object,),{...})
+自定义类的三个关键组成部分:
+# 1. 类名
+# 2. 类的基类们
+# 3. 类的名称空间
+
+
+
+

@@ -1,0 +1,96 @@
+1.什么是单例
+多次实例化的结果指向同一个实例
+2.为什么要使用单例，用单例来解决哪些事情
+用于节省内存空间
+如果我们从配置文件中读取配置来进行实例化，在配置相同的情况下，就没必要重复产生对象浪费内存了
+3.单例有那些实现方法，写出单例的各实现方法
+# 单例模式:
+#settings.py
+# IP='127.0.0.1'
+# PORT='3306'
+#方式一:
+import settings
+class Mysql:
+    __instance=None
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+    @classmethod
+    def from_conf(cls):
+        if cls.__instance is None:
+            cls.__instance=cls(settings.IP,settings.PORT)
+        return cls.__instance
+obj1=Mysql.from_conf()
+obj2=Mysql.from_conf()
+obj3=Mysql('192.168.2.1','3306')
+print(obj1)#<__main__.Mysql object at 0x0000018C60598EB8>
+print(obj2)#<__main__.Mysql object at 0x0000018C60598EB8>
+print(obj3)#<__main__.Mysql object at 0x0000018C60598EF0>
+
+#方式二:
+import settings
+def singleton(cls):
+    cls.__instance=cls(settings.IP,settings.PORT)
+    def wrapper(*args,**kwargs):
+        if len(args)==0 and len(kwargs)==0:
+            return cls.__instance
+        return cls(*args,**kwargs)
+    return wrapper
+@singleton
+class Mysql:
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+obj1=Mysql()
+obj2=Mysql()
+obj3=Mysql('192.168.2.1','3306')
+print(obj1)#<__main__.Mysql object at 0x00000221877587F0>
+print(obj2)#<__main__.Mysql object at 0x00000221877587F0>
+print(obj3)#<__main__.Mysql object at 0x0000022187758EB8>
+
+#方式三:
+import settings
+class Mymetas(type):
+    def __init__(self,class_name,class_bases,class_dic):
+        super().__init__(class_name,class_bases,class_dic)
+        self.__instance=self(settings.IP,settings.PORT)
+    def __call__(self, *args, **kwargs):
+        if len(args)==0 and len(kwargs)==0:
+            return self.__instance
+        else:
+            obj=self.__new__(self)
+            obj.__init__(*args,**kwargs)
+            return obj
+class Mysql(object,metaclass=Mymetas):
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+obj1=Mysql()
+obj2=Mysql()
+obj3=Mysql('192.168.2.1','3306')
+print(obj1)#<__main__.Mysql object at 0x0000019BF9708EB8>
+print(obj2)#<__main__.Mysql object at 0x0000019BF9708EB8>
+print(obj3)#<__main__.Mysql object at 0x0000019BF97104A8>
+
+
+aaa.py
+import settings
+class Mysql:
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+__instance=Mysql(settings.IP,settings.PORT)
+
+def foo():
+    from aaa import __instance
+    print(__instance)
+def foo2():
+    from aaa import __instance
+    print(__instance)
+f1=foo()#<aaa.Mysql object at 0x0000027B1B339588>
+f2=foo2()#<aaa.Mysql object at 0x0000027B1B339588>
+4.深入去了解网络编程
+
+5.调研重写__new__方法来实现单例，并总结
+从元类的角度控制Mysql类,如果Mysql实例化没有传值就直接返回固定的内存地址
+	

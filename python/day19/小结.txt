@@ -1,0 +1,232 @@
+configparser模块:
+    configparser配置文件解析模块
+	什么是配置文件:用于提供程序运行所需要的一些信息的文件 后缀ini cfg
+	有什么用:方便用户修改,不用去改程序源代码
+
+ini文件的格式:(包括两种元素:section分区和option选项)#一个文件可以有多个section,一个section可以有多个选项
+    [egon]
+    pwd='123'
+    age=18
+    sex='male'
+    salary=3.1
+    is_beautiful=True
+    [alex]
+    pwd='alex3714'
+    age=38
+
+import configparser
+config=configparser.ConfigParser()#得到一个对象
+config.read('config.ini')#可以读a.cfg a.ini a.cnf
+print(config.sections())#获取所有分区
+print(config.options('egon'))#获取所有选项
+res=config.options('egon')#取某一个标题下面的所有配置项(取kye值)
+age=config.get('egon','age')
+print(type(age))#从文件里面取出来都是字符串类型
+age=config.getint('egon','age')#getfloat getboolean
+print(type(age))
+print(config.items('egon'))#取key和value都取出来
+config.add_section('wupeiqi')#增加conf节点(也就是section分区)
+# config.set('wupeiqi','age','18')#添加值
+
+
+xml模块
+    xml是可扩展标记语言
+xml文件示范:
+<data>
+    <country name="Liechtenstein">
+        <rank updated="yes">2</rank>
+        <gdppc>141100</gdppc>
+        <neighbor direction="E" name="Austria" />
+        <neighbor direction="W" name="Switzerland" />
+    <newTag name="DSB">123</newTag></country>
+    <country name="Singapore">
+        <rank updated="yes">5</rank>
+        <gdppc>59900</gdppc>
+        <neighbor direction="N" name="Malaysia" />
+    <newTag name="DSB">123</newTag></country>
+    <country name="Panama">
+        <rank updated="yes">69</rank>
+        <gdppc>13600</gdppc>
+        <neighbor direction="W" name="Costa Rica" />
+        <neighbor direction="E" name="Colombia" />
+    <newTag name="DSB">123</newTag></country>
+</data>
+
+
+<tagname/>简写法
+注意:最外层有且只有一个标签 这个标签称之为根标签
+<?xml version="1.0" encoding="utf-8"?>#第一行的文档声明 用于告诉计算机怎么理解
+使用场景:
+    1.配置文件
+    2.常规的数据交换  例如从服务器获取一段新闻
+与json的区别:
+    作用是一样的 都是一种数据格式
+    xml比json先诞生
+    json的数据比xml小
+    目前json是主流
+python中的xml处理
+    使用到的模块
+    ElmentTree 表示整个文件的元素树
+    Elment 表示一个节点
+        属性
+        1.text      开始标签和结束标签中间的文本
+        2.attrib    所有的属性     字典类型
+        3.tag       标签的名字
+        方法
+            get 获取某个属性的值
+1.解析XML
+    查找标签
+    find      在子标签中获取名字匹配第一个
+    findall   在子标签中获取名字匹配的所有标签
+    iter(tagname)      在全文中查找[匹配的所有标签 返回一个迭代器
+2.生成XML
+    用ElmentTree
+    parse()  解析一个文件
+    getroot() 获取根标签
+    write()  写入到文件
+3.修改xml
+    set 一个属性
+    remove 一个标签
+    append 一个标签
+
+
+#查
+import xml.etree.ElementTree as et
+#得到节点树
+tree=et.parse('test.xml')
+#获取根标签
+root=tree.getroot()
+#获取所有的country(查找标签find/findall)
+print(root.find('country'))
+#获取year
+print(root.iter('year'))#在全文中查找,返回迭代器(找的是标签)
+
+#遍历整个xml 标签名 属性 文本
+for country in root:
+    print(country.tag,country.attrib,country.text)
+    for t in country:
+        print(t.tag, t.attrib, t.text)
+
+print(root.find('country').get('name'))#得到country中name的属性内容
+
+#改
+import xml.etree.ElementTree as et
+#读到内存
+tree=et.parse('test.xml')
+for country in tree.findall('country'):
+    yeartag=country.find('year')
+    yeartag.text=str(int(yeartag.text)+1)
+#写到硬盘中(xml_declaration=False)文档声明
+tree.write("test.xml",encoding='utf8',xml_declaration=False)
+
+
+#删
+import xml.etree.ElementTree as et
+#读到内存
+tree=et.parse('test.xml')
+for country in tree.findall('country'):
+    country.remove(country.find('year'))
+tree.write("test.xml",encoding='utf8',xml_declaration=False)
+
+#添加子标签
+import xml.etree.ElementTree as et
+#读到内存
+tree=et.parse('test.xml')
+for country in tree.findall('country'):
+    #一个新标签
+    newtag=et.Element('newTag')#添加标签
+    newtag.text='123'#文本
+    newtag.attrib['name']='DSB'
+    #添加到country便签里面
+    country.append(newtag)
+
+tree.write("test.xml",encoding='utf8',xml_declaration=False)
+
+
+#用代码生成xml
+import xml.etree.ElementTree as et
+#创建根标签
+root=et.Element('root')
+#创建节点树
+t1=et.ElementTree(root)
+#创建一个peron标签
+person=et.Element('person')
+person.attrib['name']="yyh"
+person.attrib['sex']="man"#注意:只能写字符串
+person.text="这是一个person标签"
+root.append(person)
+#写入文件
+t1.write('newXML.xml',encoding='utf8',xml_declaration=True)
+
+shelve模块
+    shelve也是python提供给我们的序列化工具，比pickle用起来更简单一些。
+    shelve只提供给我们一个open方法，是用key来访问的，使用起来和字典类似。
+	什么时候用户:写一个单机程序时可以考虑
+存:
+    import shelve
+    f=shelve.open('shelve_file')
+    f['a']={
+        'name':'egon'
+    }
+    f.close()
+取:
+    import shelve
+    f=shelve.open('shelve_file')
+    message=f['a']#print(f.get('a'))
+    f.close()
+    print(message)
+总结shelve:
+		可以存储python所有基础数据类型
+		只需要指定文件名字即可,使用方法与字典类型相同
+		其实该模块是对pickle模块的封装,使其更简单
+
+hash模块
+1 什么是hash
+    hash是一种算法，该算法接受传入的内容，经过运算得到一串hash值
+    如果把hash算法比喻为一座工厂
+    那传给hash算法的内容就是原材料
+    生成的hash值就是生产出的产品
+
+2、为何要用hash算法
+    hash值/产品有三大特性：
+        1、只要传入的内容一样，得到的hash值必然一样(输入数据不同,得到的hash可能相同)
+        2、只要我们使用的hash算法固定，无论传入的内容有多大，
+            得到的hash值的长度是固定的
+        3、不可以用hash值逆推出原来的内容
+
+        基于1和2可以在下载文件时做文件一致性校验
+        基于1和3可以对密码进行加密
+3.怎么用
+    1、造出hash工厂
+    m=hashlib.md5()
+    2.运送原材料
+    m.update('张铭言'.encode('utf8'))
+    3.产出hash值
+    print(m.hexdigest())
+4.文件一致性校验
+import hashlib,os
+md5_obj=hashlib.md5()
+file_size=os.path.getsize('db.txt')
+f=open('db.txt','rb')
+while file_size>0:
+    if file_size>1024:
+        content=f.read(1024)
+        file_size-=1024
+    else:
+        content=f.read(file_size)
+        file_size-=file_size
+    md5_obj.update(content)
+print(md5_obj.hexdigest())
+5.对文明密码进行加密
+import hashlib
+user='egon'
+pwd='123'
+md5_obj=hashlib.md5(user.encode('utf8'))
+md5_obj.update(pwd.encode('utf8'))
+print(md5_obj.hexdigest())
+6.python 还有一个 hmac 模块，它内部对我们创建 key 和 内容 进行进一步的处理然后再加密:
+import hmac
+m=hmac.new('小鸡炖蘑菇'.encode('utf8'6))
+m.update('hello'.encode('utf8'))
+print(m.hexdigest())
+

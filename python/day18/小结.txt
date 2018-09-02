@@ -1,0 +1,148 @@
+包:
+1. 什么是包
+    包就是一个包含有__init__.py文件的文件夹
+    包本质就是一种模块,即包是被导入使用的,包内部包含的文件也都是用来被导入使用
+2 为何要用包
+    包是文件夹,那文件夹就是用来组织文件的,提高程序的结构性和可维护性
+注意:在python2中,包下必须有一个__init__.py文件,而python3中即便是没有也不会报错
+首次导入包,发生三件事:
+    1. 以包下的__init_.py文件为基准来产生一个名称空间
+    2. 执行包下的__init_.py文件的代码,将执行过程中产生的名字都丢到名称空间中
+    3. 在当前执行文件中拿到一个名字p1,该p1就是指向__init__.py名称空间的
+总结包的使用无非注意三点:
+    1. 但凡是在导入语句中带点的,点的左边都必须是一个包
+    2. 导入包就是在导包下的__init__.py文件
+    3. 如果使用绝对导入,绝对导入的起始位置都是以包的顶级目录为起始点
+    4. 但是包内部模块的导入通常应该使用相对导入,用.代表当前所在的文件(而非执行文件),..代表上一级
+       强调:
+           1. 相对导入只能包内部的模块之间互相导入使用
+           2. ..上一级不能超出顶级包
+    #导入模块其实就是在导入包下的__init__.py文件
+
+日志模块:
+"""
+    要求:1. 能够同时往终端与文件中记录日志2. 能够修改字符串编码
+    写日志有三种种方式(思路):
+        方式一:只能输出到文件,不能打印到终端
+            1.日志内容2.保存到文件
+        方式二(既能到文件又能到终端):
+            1. logger对象: 负责生产各种级别的日志
+            2. filter对象: 过滤日志
+            3. handler对象: 控制日志输出目标位置
+            4. formmater对象:控制日志的格式
+            5. 绑定logger对象与handler对象
+            6. 绑定handler对象与formatter对象
+            7. 设置日志级别,有logger对象与handler对象两层关卡,必须都放行最终日志才会放行,通常二者级别相同
+            8. 使用logger对象产生日志
+        方式三:(既能到文件又能到终端)
+"""
+日志级别:
+    logging.debug('debug日志') # 10
+    logging.info('info日志')   # 20
+    logging.warning('warning日志') #30
+    logging.error('error日志')#40
+    logging.critical('critical日志') #50
+方式一(只能存到文件,不能输出到终端):
+    #控制日志级别/控制日志格式/控制输出的目标为文件
+    import logging
+    logging.basicConfig(filename='access.log',
+                        format='%(asctime)s-%(name)s-%(levelname)s-%(module)s:%(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S %p',
+                        )
+    logging.error('error日志')
+方式二:
+import logging
+#+-2
+负责生产各种级别的日志
+logger1=logging.getLogger('用户交易')# 日志名用来标识日志的与什么业务有关
+# 2. filter对象: 过滤日志(忽略)
+# 3. handler对象: 控制日志输出目标位置
+fh1=logging.FileHandler('a1.log',encoding='utf8')#输出到a1.log文件
+fh2=logging.FileHandler('a2.log',encoding='utf8')#输出到a2.log文件
+ch=logging.StreamHandler()#打印到终端(也就是打印到屏幕)
+# 4. formmater对象(控制格式)
+formatter1=logging.Formatter(
+    fmt='%(asctime)s-%(name)s-%(levelname)s-%(module)s:%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S %p'
+)
+formatter2=logging.Formatter(
+    fmt='%(asctime)s-%(levelname)s:%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S %p'
+)
+# 5. 绑定logger对象与handler对象
+logger1.addHandler(fh1)
+logger1.addHandler(fh2)
+logger1.addHandler(ch)
+# 6. 绑定handler对象与formatter对象
+fh1.setFormatter(formatter1)
+fh2.setFormatter(formatter1)
+ch.setFormatter(formatter2)
+# 7. 设置日志级别,有logger对象与handler对象两层关卡,必须都放行最终日志才会放行,通常二者级别相同
+logger1.setLevel(10)
+fh1.setLevel(10)
+fh2.setLevel(10)
+ch.setLevel(10)
+# 8. 使用logger对象产生日志
+logger1.info('alex给egon转账1个亿')
+
+方式三:
+import logging
+standard_format='%(asctime)s-task:%(name)s-%(filename)s:%(lineo)d-'\
+    '%(levelname)s:[%(message)s]'
+#如果代码过长就用换行符换行
+simple_format='%(filename)s:%(lineno)d-%(levelname)s:[%(message)s]'
+fh1_path=r'a1.log'
+fh2_path=r'a2.log'
+#log配置字典
+LOGGING_DIC={
+    'version':1,
+    'disable_existing_loggers':False,
+    'formatters':{
+        'standard':{
+            'format':standard_format
+        },
+        'simple':{
+            'format':simple_format
+        },
+    },
+    'filters':{},
+    'handlers':{
+        #打印到终端的日志
+        'ch':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',#打印到终端
+            'formatter':'simple'
+        },
+        #打印到a1.log文件的日志
+        'fh1':{
+            'level':'DEBUG',
+            'class':'logging.FileHandler',#保存到文件
+            'formatter':'simple',
+            'filename':fh2_path,#日志文件的路径
+            'encoding':'utf8',#日志文件的编码,再也不用担心中文log乱码了
+        },
+        'fh2':{
+          'level':'DEBUG',
+            'class':'logging.FileHandler',
+            'formatter':'simple',
+            'filename':fh2_path,
+            'encoding':'utf8'
+        },
+    },
+    'loggers':{
+        '':{#引号里面为空是为了传入的对象不在这里面,就是用这里面的东西,如果是特别的,就单独写出来
+            'handlers':['fh1','fh2','ch'],
+            'level':'DEBUG',
+        }
+    }
+}
+
+##########调用
+import logging.config
+def get_logger(name):
+    logging.config.dictConfig(LOGGING_DIC)
+    return logging.getLogger(name)
+logger1=get_logger('用户交易')
+logger1.info('alex给egon转账1个亿')
+logger2=get_logger('用户权限')
+logger2.error('egon没有执行权限')
